@@ -126,3 +126,86 @@ class GymDetailsforCustomerViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = GymInfo.objects.all()
     serializer_class = GymInfoSerializer
+
+
+
+
+
+
+
+# FRONT END VIEWS
+
+    # views.py
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
+
+# Home page view
+def home_view(request):
+    return render(request, 'home.html')
+
+# Login view
+def login_view(request):
+    print("LOGIN VIEW CALLED")
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            return render(request, 'login.html', {'error': 'Invalid username or password'})
+    return render(request, 'login.html')
+
+import requests
+from django.shortcuts import render, redirect
+# Signup view
+# gymDetails/views.py
+import requests
+from django.shortcuts import render, redirect
+
+def signup_view(request):
+    if request.method == 'POST':
+        phone_number = request.POST['phone_number']
+        password = request.POST['password1']
+        email = request.POST['email']
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        user_type = request.POST['user_type']
+
+        user_data = {
+            'user_type': user_type,
+            'phone_number': phone_number,
+            'password': password,
+            'email': email,
+            'first_name': first_name,
+            'last_name': last_name,
+        }
+
+        # Make a request to the signup API
+        response = requests.post('http://127.0.0.1:8000/api/createUser/', json=user_data)
+
+        # Print status code and content for debugging
+        print("Response Status Code:", response.status_code)
+        print("Response Content:", response.content)
+
+        if response.status_code == 201:
+            return redirect('login')
+        else:
+            # Handle API error response
+            return render(request, 'signup.html', {'error': response.text})  # Use response.text for raw content
+
+    return render(request, 'signup.html')
+
+# Logout view
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+
+from django.shortcuts import render, get_object_or_404
+
+def gym_detail(request, pk):  # Ensure it accepts pk
+    gym = get_object_or_404(Gym, pk=pk)  # Use pk to get the Gym object
+    return render(request, 'gym_detail.html', {'gym': gym})
+
+# Need to fix this part

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<h1>Welcome to the Home Page!</h1>
+<p>This is the home page of the website. You can log in or sign up using the navigation bar.</p>
+
+{% if user.user_type == 'gym_owner' %}
+    <!-- Button to add gym details, redirects to the gym details page -->
+    <a href="{% url 'add_gym_details' %}" class="button">Add Gym Details</a>
+{% elif user.user_type == 'customer' %}
+    <h2>Available Gyms</h2>
+    <div id="gym-list"></div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const gymListContainer = document.getElementById('gym-list');
+            gymListContainer.innerHTML = '<p>Loading gyms...</p>'; // Loading indicator
+    
+            fetch('/api/gymlist/')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    gymListContainer.innerHTML = ''; // Clear loading message
+                    if (data.length === 0) {
+                        gymListContainer.innerHTML = '<p>No gyms available.</p>';
+                    } else {
+                        data.forEach(gym => {
+                            const gymItem = document.createElement('div');
+                            const id = gym.id; // Ensure this is correct
+    
+                            // Construct the innerHTML using the extracted ID
+                            gymItem.innerHTML = `<h3><a href="/gymlist/${id}/">${gym.gym_name}</a></h3><p>${gym.description}</p><p>Location: ${gym.city}</p>`;
+                            gymListContainer.appendChild(gymItem);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching gym list:', error);
+                    gymListContainer.innerHTML = '<p>Failed to load gym list. Please try again later.</p>';
+                });
+        });
+    </script>
+    
+{% endif %}
+{% endblock %}
