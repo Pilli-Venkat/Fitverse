@@ -10,16 +10,20 @@ from django.contrib.auth.models import User
 from rest_framework import status
 
 
+
 class GymInfoViewSet(viewsets.ModelViewSet):
-    queryset = GymInfo.objects.all()
-    permission_classes = [IsAuthenticated]  # Uncomment this line to require authentication
+
+    permission_classes = [IsAuthenticated]  # Require authentication
+
+    def get_queryset(self):
+        # Access request.user in this method
+        return GymInfo.objects.filter(owner=self.request.user)
 
     def get_serializer_class(self):
         if self.request.method in ['POST', 'PUT', 'PATCH']:
             return CreateGymInfoSerializer  # Use CreateGymInfoSerializer for POST, PUT, PATCH
         return GymInfoSerializer  # Use GymInfoSerializer for other methods
-
-
+    
 
 class CreateUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
@@ -54,7 +58,8 @@ def userDetails(request):
            
             'phone_number': request.user.phone_number,
             'email': request.user.email,
-            'name':request.user.first_name + ' ' +request.user.last_name
+            'name':request.user.first_name + ' ' +request.user.last_name,
+            'account_type': request.user.user_type
             # Add any other fields you want to include
         }
         return Response(user_data)  # Use Response instead of JsonResponse
@@ -113,3 +118,11 @@ def updateUserDetails(request):
         return Response(updated_user_data, status=status.HTTP_200_OK)
     
     return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+
+class GymDetailsforCustomerViewSet(viewsets.ReadOnlyModelViewSet):
+    # permission_classes = [IsAuthenticated]  # Uncomment if you want authentication
+
+    queryset = GymInfo.objects.all()
+    serializer_class = GymInfoSerializer
