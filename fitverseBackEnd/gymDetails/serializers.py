@@ -11,14 +11,14 @@ class GymInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GymInfo
-        fields = ['id', 'owner_name', 'gym_name', 'mobile_phone', 'description', 'city', 'owner']
+        fields = ['id', 'gym_name', 'mobile_phone', 'description', 'city', 'owner']
 
 class CreateGymInfoSerializer(serializers.ModelSerializer):
     owner = serializers.PrimaryKeyRelatedField(read_only=True)  # Set as read-only
 
     class Meta:
         model = GymInfo
-        fields = ['id', 'owner_name', 'gym_name', 'mobile_phone', 'description', 'city', 'owner']
+        fields = ['id', 'gym_name', 'mobile_phone', 'description', 'city', 'owner']
 
     def create(self, validated_data):
         request = self.context.get('request')  # Get the request from context

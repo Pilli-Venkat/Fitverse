@@ -4,7 +4,7 @@ from Users.models import CustomUser
 
 class GymInfo(models.Model):
     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='gyms')  # Owner of the gym
-    owner_name = models.CharField(max_length=200)
+    #owner_name = models.CharField(max_length=200)
     gym_name = models.CharField(max_length=100)
     mobile_phone = models.CharField(max_length=15)
     description = models.TextField()

@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import GymInfo, CustomUser
 from .serializers import GymInfoSerializer, CreateGymInfoSerializer, CreateUserSerializer
 from rest_framework import decorators
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,permission_classes
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from rest_framework import status
@@ -44,7 +44,7 @@ class CreateUserViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)  # Allow only POST for create
     
-    
+
 @api_view(['GET'])
 def userDetails(request):
     # Check if the user is authenticated
@@ -64,10 +64,10 @@ def userDetails(request):
 
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def updateUserDetails(request):
     # Check if the user is authenticated
     if request.user.is_authenticated:
-        # Get the user instance
         user = request.user
         
         # Update user fields with provided data
@@ -76,11 +76,25 @@ def updateUserDetails(request):
         first_name = request.data.get('first_name')
         last_name = request.data.get('last_name')
 
-        # Update the fields if provided
+        # Validate phone number uniqueness if provided
         if phone_number:
+            # Check if the phone number already exists for another user
+            if CustomUser.objects.filter(phone_number=phone_number).exclude(id=user.id).exists():
+                return Response({'error': 'This phone number is already associated with another account.'}, 
+                                status=status.HTTP_400_BAD_REQUEST)
+
             user.phone_number = phone_number
+
+        # Optionally validate email uniqueness if needed
         if email:
+            # Check if the email already exists for another user
+            if CustomUser.objects.filter(email=email).exclude(id=user.id).exists():
+                return Response({'error': 'This email is already associated with another account.'}, 
+                                status=status.HTTP_400_BAD_REQUEST)
+
             user.email = email
+        
+        # Update other fields if provided
         if first_name:
             user.first_name = first_name
         if last_name:
@@ -97,5 +111,5 @@ def updateUserDetails(request):
         }
         
         return Response(updated_user_data, status=status.HTTP_200_OK)
-    else:
-        return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
+    
+    return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
