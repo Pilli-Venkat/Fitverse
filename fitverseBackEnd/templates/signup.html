@@ -1,22 +1,92 @@
 <!-- signup.html -->
-<form method="post">
-    {% csrf_token %}
-    <input type="text" name="phone_number" placeholder="Phone Number" required>
-    <input type="password" name="password1" placeholder="Password" required>
-    <input type="email" name="email" placeholder="Email" required>
-    <input type="text" name="first_name" placeholder="First Name" required>
-    <input type="text" name="last_name" placeholder="Last Name" required>
-    
-    <select name="user_type" required>
-        <option value="">Select User Type</option>
-        <option value="gym_owner">Gym Owner</option>
-        <option value="customer">Customer</option>
-        <option value="trainer">Trainer</option>
-    </select>
-    
-    <button type="submit">Sign Up</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
 
-{% if error %}
-<p style="color:red;">{{ error }}</p>
-{% endif %}
+    <h1>Signup</h1>
+
+    <form id="signup-form">
+        {% csrf_token %}
+        <div>
+            <label for="first_name">First Name:</label>
+            <input type="text" name="first_name" required>
+        </div>
+        <div>
+            <label for="last_name">Last Name:</label>
+            <input type="text" name="last_name" required>
+        </div>
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" name="email" required>
+        </div>
+        <div>
+            <label for="phone_number">Phone Number:</label>
+            <input type="text" name="phone_number" required>
+        </div>
+        <div>
+            <label for="password1">Password:</label>
+            <input type="password" name="password" required>
+        </div>
+        <div>
+            <label for="user_type">User Type:</label>
+            <select name="user_type" required>
+                <option value="customer">Customer</option>
+                <option value="trainer">Trainer</option>
+                <option value="gym_owner">Gym Owner</option>
+            </select>
+        </div>
+        <button type="submit">Signup</button>
+    </form>
+
+    <div class="error" style="color: red;">
+        {% if error %}
+            {{ error }}
+        {% endif %}
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#signup-form').on('submit', function(event) {
+                event.preventDefault(); // Prevent default form submission
+
+                const formData = $(this).serializeArray(); // Get form data
+                const jsonData = {};
+                formData.forEach(item => {
+                    jsonData[item.name] = item.value; // Convert to JSON object
+                });
+
+                // Make a POST request to the API
+                fetch('/api/createUser/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}' // Include CSRF token
+                    },
+                    body: JSON.stringify(jsonData)
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Redirect to login page or show a success message
+                        window.location.href = '/login/'; // Redirect on successful signup
+                    } else {
+                        return response.text().then(text => {
+                            throw new Error(text); // Handle API errors
+                        });
+                    }
+                })
+                .catch(error => {
+                    // Display the error message
+                    $('.error').text(error.message); // Display error on the page
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

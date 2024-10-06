@@ -1,0 +1,103 @@
+<!-- gym/templates/edit_gym_details.html -->
+
+{% extends 'base.html' %}
+
+{% block title %}Edit Gym Details{% endblock %}
+
+{% block content %}
+<h2>Edit Gym Details</h2>
+
+<form id="edit-gym-form">
+    {% csrf_token %}
+    <div>
+        <label for="gym_name">Gym Name:</label>
+        <input type="text" id="gym_name" name="gym_name" required>
+    </div>
+
+    <div>
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea>
+    </div>
+
+    <div>
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city" required>
+    </div>
+
+    <button type="submit">Save Changes</button>
+</form>
+
+<script>
+    // Function to get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    const gymId = {{ gym_id }};  // Pass gym_id from the view context
+
+    // Fetch existing gym details to populate the form
+    fetch(`/api/gyms/${gymId}/`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(gym => {
+            document.getElementById('gym_name').value = gym.gym_name;
+            document.getElementById('description').value = gym.description;
+            document.getElementById('city').value = gym.city;
+        })
+        .catch(error => {
+            console.error('Error fetching gym details:', error);
+            alert('Failed to load gym details. Please try again.');
+        });
+
+    // Handle form submission to update gym details
+    document.getElementById('edit-gym-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const updatedGymData = {
+            gym_name: document.getElementById('gym_name').value,
+            description: document.getElementById('description').value,
+            city: document.getElementById('city').value,
+        };
+
+        fetch(`/api/gyms/${gymId}/`, {
+            method: 'PUT',  // or 'PATCH' if you prefer partial updates
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify(updatedGymData),
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errData => { throw errData; });
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert('Gym updated successfully!');
+            window.location.href = '{% url "home" %}';
+        })
+        .catch(error => {
+            console.error('Error updating gym:', error);
+            alert('Failed to update gym. Please check the form and try again.');
+        });
+    });
+</script>
+{% endblock %}

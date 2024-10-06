@@ -173,55 +173,29 @@ from django.shortcuts import render, redirect
 import requests
 from django.shortcuts import render, redirect
 
+
 def signup_view(request):
     if request.method == 'POST':
-        phone_number = request.POST['phone_number']
-        password = request.POST['password1']
-        email = request.POST['email']
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        user_type = request.POST['user_type']
+        # Render the template if the method is POST, but we'll handle API calls in the frontend
+        return render(request, 'signup.html') 
 
-        user_data = {
-            'user_type': user_type,
-            'phone_number': phone_number,
-            'password': password,
-            'email': email,
-            'first_name': first_name,
-            'last_name': last_name,
-        }
-
-        # Make a request to the signup API
-        response = requests.post('http://127.0.0.1:8000/api/createUser/', json=user_data)
-
-        # Print status code and content for debugging
-        print("Response Status Code:", response.status_code)
-        print("Response Content:", response.content)
-
-        if response.status_code == 201:
-            return redirect('login')
-        else:
-            # Handle API error response
-            return render(request, 'signup.html', {'error': response.text})  # Use response.text for raw content
-
-    return render(request, 'signup.html')
-
-# Logout view
+    return render(request, 'signup.html')  # Render signup page for GET request
 def logout_view(request):
     logout(request)
     return redirect('login')
 
 from django.shortcuts import render, get_object_or_404
-
-def gym_detail(request, pk):  # Ensure it accepts pk
-    gym = get_object_or_404(Gym, pk=pk)  # Use pk to get the Gym object
-    return render(request, 'gym_detail.html', {'gym': gym})
-
-# Need to fix this part
   
 from django.shortcuts import render, redirect
 from .models import GymInfo
 from django.contrib.auth.decorators import login_required
+
+
+@login_required
+def gym_detail(request, pk):
+    return render(request, 'gym_detail.html', {'gym_id': pk})
+# Need to fix this part
+
 
 @login_required
 def add_gym_details(request):
@@ -238,3 +212,13 @@ def add_gym_details(request):
         return redirect('home')  # Assuming 'home' is a defined URL name
 
     return render(request, 'add_gym_details.html')
+
+
+@login_required
+def edit_gym_details(request, gym_id):
+    # The actual editing is handled via API; this view renders the edit page
+    gym = get_object_or_404(GymInfo, id=gym_id, owner=request.user)
+    context = {
+        'gym_id': gym.id,
+    }
+    return render(request, 'edit_gym_details.html', context)

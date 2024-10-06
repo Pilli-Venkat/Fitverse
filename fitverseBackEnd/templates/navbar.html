@@ -1,59 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Navigation Example</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        nav {
-            background-color: #333;
-            padding: 10px;
-        }
-        nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            gap: 15px; /* Space between items */
-        }
-        nav ul li {
-            display: inline;
-        }
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-            padding: 8px 15px; /* Padding around links */
-            transition: background 0.3s;
-        }
-        nav ul li a:hover {
-            background-color: #575757; /* Background on hover */
-        }
-        .welcome-message {
-            color: white;
-            margin-left: 20px; /* Space between welcome message and links */
-            display: inline; /* Ensure it displays inline with other items */
-        }
-    </style>
-</head>
-<body>
+<!-- gym/templates/navbar.html -->
 
 <nav>
     <ul>
         <li><a href="{% url 'home' %}">Home</a></li>
-        <li><a href="{% url 'login' %}">Login</a></li>
-        <li><a href="{% url 'signup' %}">Sign Up</a></li>
         {% if user.is_authenticated %}
             <li><a href="{% url 'logout' %}">Logout</a></li>
             <li class="welcome-message">Welcome, {{ user.first_name }}!</li>
+            <li class="welcome-message">User {{ user.user_type }}!</li>
+        {% else %}
+            <li><a href="{% url 'login' %}">Login</a></li>
+            <li><a href="{% url 'signup' %}">Sign Up</a></li>
         {% endif %}
     </ul>
 </nav>
 
-</body>
-</html>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
+    nav {
+        background-color: #333;
+        padding: 10px;
+    }
+    nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        gap: 15px; /* Space between items */
+    }
+    nav ul li {
+        display: inline;
+    }
+    nav ul li a {
+        color: white;
+        text-decoration: none;
+        padding: 8px 15px; /* Padding around links */
+        transition: background 0.3s;
+    }
+    nav ul li a:hover {
+        background-color: #575757; /* Background on hover */
+    }
+    .welcome-message {
+        color: white;
+        margin-left: 20px; /* Space between welcome message and links */
+        display: inline; /* Ensure it displays inline with other items */
+    }
+</style>

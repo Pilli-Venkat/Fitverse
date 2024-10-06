@@ -7,7 +7,7 @@ router = DefaultRouter()
 router.register(r'gyminfo', views.GymInfoViewSet, basename='gyminfo')
 router.register(r'createUser', views.CreateUserViewSet)
 router.register(r'gymlist', views.GymDetailsforCustomerViewSet, basename='gymlist')
-router.register(r'addGymDetails', views.createGymInfoViewSet, basename='addGymDetails'),
+router.register(r'gyms', views.createGymInfoViewSet, basename='gyms')
 
 urlpatterns = [
     # API routes
@@ -25,4 +25,5 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('gymlist/<int:pk>/', views.gym_detail, name='gym_detail'),  # This URL pattern s
     path('addGymdetails/', views.add_gym_details, name='add_gym_details'),
+    path('edit-gym/<int:gym_id>/', views.edit_gym_details, name='edit_gym_details'),
 ]

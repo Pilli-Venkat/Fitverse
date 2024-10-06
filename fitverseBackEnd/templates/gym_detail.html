@@ -1,13 +1,61 @@
-<!-- gym_detail.html -->
+<!-- gym/templates/gym_detail.html -->
+
 {% extends 'base.html' %}
 
-{% block title %}{{ gym.gym_name }} Details{% endblock %}
+{% block title %}Gym Details{% endblock %}
 
 {% block content %}
-<h1>{{ gym.gym_name }}</h1>
-<p><strong>Description:</strong> {{ gym.description }}</p>
-<p><strong>Location:</strong> {{ gym.city }}</p>
-<p><strong>Owner:</strong> {{ gym.owner.username }}</p>
-<!-- Add more fields as needed -->
-<a href="{% url 'gymlist' %}">Back to Gym List</a>
+    <h2>Gym Details</h2>
+    <div id="gym-details">
+        <!-- Gym details will be populated here -->
+    </div>
+
+    <script>
+        // Function to get CSRF token from cookies
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+
+        const gymId = {{ gym_id }};  // Pass gym_id from the view context
+
+        // Fetch gym details from the API
+        fetch(`/api/gymlist/${gymId}/`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(gym => {
+                const gymDetailsContainer = document.getElementById('gym-details');
+                gymDetailsContainer.innerHTML = `
+                    <h3>${gym.gym_name}</h3>
+                    <p><strong>Description:</strong> ${gym.description}</p>
+                    <p><strong>City:</strong> ${gym.city}</p>
+                `;
+            })
+            .catch(error => {
+                console.error('Error fetching gym details:', error);
+                document.getElementById('gym-details').innerHTML = '<p>Failed to load gym details. Please try again later.</p>';
+            });
+    </script>
 {% endblock %}
