@@ -31,7 +31,7 @@ class CreateGymInfoSerializer(serializers.ModelSerializer):
         validated_data['owner'] = user  # Set the owner to the current user
         return super().create(validated_data)
     
-    
+
 # To create or register User
 
 class CreateUserSerializer(serializers.ModelSerializer):
@@ -44,3 +44,14 @@ class CreateUserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])  # Hash the password
         user.save()
         return user
+
+
+from rest_framework import serializers
+from .models import Membership
+
+class MembershipSerializer(serializers.ModelSerializer):
+    gym = GymInfoSerializer()
+    class Meta:
+        model = Membership
+        fields = ['id', 'user', 'gym', 'start_date', 'expiration_date', 'membership_type']
+

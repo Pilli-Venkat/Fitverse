@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Membership Options{% endblock %}
+
+{% block content %}
+    <h2>Your Membership Options</h2>
+    <div id="membership-options">
+        <!-- Membership options will be populated here -->
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/api/customerMemberships/', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(memberships => {
+                console.log(memberships); // Log the memberships response for debugging
+                const membershipContainer = document.getElementById('membership-options');
+                if (memberships.length === 0) {
+                    membershipContainer.innerHTML = '<p>You have no active memberships.</p>';
+                } else {
+                    memberships.forEach(membership => {
+                        // Ensure gym and its gym_name exists before accessing
+                        const gymName = membership.gym && membership.gym.gym_name ? membership.gym.gym_name : 'Unknown Gym';
+                        const membershipType = membership.membership_type || 'Unknown Type';
+                        const expirationDate = membership.expiration_date ? new Date(membership.expiration_date).toLocaleDateString() : 'Unknown Date';
+                        const gymId = membership.gym ? membership.gym.id : ''; // Get gym ID
+
+                        membershipContainer.innerHTML += `
+                            <div class="membership-card" style="border: 1px solid #ccc; border-radius: 8px; margin: 10px; padding: 15px;">
+                                <p>
+                                    <strong>Gym:</strong> 
+                                    <a href="/gymlist/${membership.gym.id}/">
+                                        ${gymName}
+                                    </a>
+                                </p>
+                                <p><strong>Membership Type:</strong> ${membershipType}</p>
+                                <p><strong>Expiration Date:</strong> ${expirationDate}</p>
+                            </div>
+                        `;
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching memberships:', error);
+                document.getElementById('membership-options').innerHTML = '<p>Failed to load membership options. Please try again later.</p>';
+            });
+        });
+    </script>
+    
+{% endblock %}

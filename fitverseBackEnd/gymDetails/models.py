@@ -12,3 +12,23 @@ class GymInfo(models.Model):
 
     def __str__(self):
         return self.gym_name
+
+
+
+class Membership(models.Model):
+    MEMBERSHIP_TYPE_CHOICES = [
+        ('day', 'Day'),
+        ('weekly', 'Weekly'),
+        ('monthly', 'Monthly'),
+        ('quarterly', 'Quarterly'),
+        ('annually', 'Annually'),
+    ]
+
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='memberships')
+    gym = models.ForeignKey(GymInfo, on_delete=models.CASCADE, related_name='memberships')
+    start_date = models.DateField(auto_now_add=True)
+    expiration_date = models.DateField()
+    membership_type = models.CharField(max_length=10, choices=MEMBERSHIP_TYPE_CHOICES)
+
+    def __str__(self):
+        return f'{self.user.first_name} - {self.gym.gym_name} ({self.get_membership_type_display()})'

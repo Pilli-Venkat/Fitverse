@@ -1,9 +1,12 @@
 <!-- gym/templates/navbar.html -->
 
+<!-- gym/templates/navbar.html -->
+
 <nav>
     <div class="nav-container">
         <ul class="nav-links">
             <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'membership-options' %}">Membership Options</a></li>  <!-- Add this line -->
         </ul>
         <div class="user-info">
             {% if user.is_authenticated %}

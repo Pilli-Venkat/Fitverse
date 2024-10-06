@@ -1,5 +1,3 @@
-<!-- gym/templates/gym_detail.html -->
-
 {% extends 'base.html' %}
 
 {% block title %}Gym Details{% endblock %}
@@ -10,6 +8,25 @@
         <!-- Gym details will be populated here -->
     </div>
 
+    <div id="membership-container">
+        <!-- Membership options or details will be populated here -->
+    </div>
+
+    <h3>Membership Options</h3>
+    <form id="membership-form" style="display: none;">  <!-- Hide this form by default -->
+        {% csrf_token %}
+        <label for="membership_type">Membership Type:</label>
+        <select name="membership_type" id="membership_type" required>
+            <option value="day">Day</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+            <option value="quarterly">Quarterly</option>
+            <option value="annually">Annually</option>
+        </select>
+        <input type="hidden" name="gym_id" value="{{ gym_id }}"> <!-- Assuming gym_id is passed from the view context -->
+        <button type="submit">Join Gym</button>
+    </form>
+
     <script>
         // Function to get CSRF token from cookies
         function getCookie(name) {
@@ -18,7 +35,6 @@
                 const cookies = document.cookie.split(';');
                 for (let i = 0; i < cookies.length; i++) {
                     const cookie = cookies[i].trim();
-                    // Does this cookie string begin with the name we want?
                     if (cookie.substring(0, name.length + 1) === (name + '=')) {
                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                         break;
@@ -39,23 +55,91 @@
                 'X-CSRFToken': csrftoken,
             },
         })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(gym => {
+            const gymDetailsContainer = document.getElementById('gym-details');
+            gymDetailsContainer.innerHTML = `
+                <h3>${gym.gym_name}</h3>
+                <p><strong>Description:</strong> ${gym.description}</p>
+                <p><strong>City:</strong> ${gym.city}</p>
+                <p><strong>Owner:</strong> ${gym.owner.first_name} ${gym.owner.last_name}</p>
+                <p><strong>Contact:</strong> ${gym.owner.phone_number}</p>
+            `;
+
+            // Fetch membership status for the specific gym
+            fetchMembershipStatus(gymId);
+        })
+        .catch(error => {
+            console.error('Error fetching gym details:', error);
+            document.getElementById('gym-details').innerHTML = '<p>Failed to load gym details. Please try again later.</p>';
+        });
+
+        // Function to fetch membership status for a specific gym
+        function fetchMembershipStatus(gymId) {
+            fetch(`/api/memberships/?gym_id=${gymId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken,
+                },
+            })
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
                 return response.json();
             })
-            .then(gym => {
-                const gymDetailsContainer = document.getElementById('gym-details');
-                gymDetailsContainer.innerHTML = `
-                    <h3>${gym.gym_name}</h3>
-                    <p><strong>Description:</strong> ${gym.description}</p>
-                    <p><strong>City:</strong> ${gym.city}</p>
-                `;
+            .then(memberships => {
+                const membershipContainer = document.getElementById('membership-container');
+                if (memberships.length > 0) {
+                    // If there's an existing membership, display the details
+                    const membership = memberships[0];  // Assuming only one membership per user for this gym
+                    membershipContainer.innerHTML = `
+                        <p><strong>Your Membership Type:</strong> ${membership.membership_type}</p>
+                        <p><strong>Expiration Date:</strong> ${new Date(membership.expiration_date).toLocaleDateString()}</p>
+                    `;
+                } else {
+                    // No existing membership, show options to join
+                    document.getElementById('membership-form').style.display = 'block';
+                }
             })
             .catch(error => {
-                console.error('Error fetching gym details:', error);
-                document.getElementById('gym-details').innerHTML = '<p>Failed to load gym details. Please try again later.</p>';
+                console.error('Error fetching memberships:', error);
+                document.getElementById('membership-container').innerHTML = '<p>Failed to load membership details. Please try again later.</p>';
             });
+        }
+
+        // Handle membership form submission
+        document.getElementById('membership-form').addEventListener('submit', function(event) {
+            event.preventDefault();  // Prevent default form submission
+            const formData = new FormData(this);
+            fetch('/api/memberships/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': csrftoken
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert('Membership created successfully!');
+                // Optionally, refresh the page or redirect the user
+                location.reload();  // Refresh the page to reflect new membership details
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to create membership. Please try again later.');
+            });
+        });
     </script>
 {% endblock %}

@@ -1,13 +1,18 @@
 # gymDetails/views.py
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from .models import GymInfo, CustomUser
-from .serializers import GymInfoSerializer, CreateGymInfoSerializer, CreateUserSerializer
+from .models import GymInfo, CustomUser,Membership
+from .serializers import GymInfoSerializer, CreateGymInfoSerializer, CreateUserSerializer,MembershipSerializer
 from rest_framework import decorators
 from rest_framework.decorators import api_view,permission_classes
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from rest_framework import status
+
+
+
+from django.shortcuts import render, get_object_or_404,redirect
+from django.contrib.auth.decorators import login_required
 
 
 
@@ -136,6 +141,96 @@ class GymDetailsforCustomerViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = GymInfo.objects.all()
     serializer_class = GymInfoSerializer
 
+class MembershipViewSet(viewsets.ModelViewSet):
+    serializer_class = MembershipSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        gym_id = self.request.query_params.get('gym_id')
+
+        # Return memberships for the authenticated user and specific gym if gym_id is provided
+        if gym_id:
+            return Membership.objects.filter(user=user, gym__id=gym_id)
+        return Membership.objects.filter(user=user)
+
+    def create(self, request, *args, **kwargs):
+        gym_id = request.data.get('gym_id')
+        membership_type = request.data.get('membership_type')
+
+        # Ensure the gym exists
+        gym = get_object_or_404(GymInfo, id=gym_id)
+
+        # Check if the user already has a membership for this gym
+        existing_membership = Membership.objects.filter(user=request.user, gym=gym).first()
+        if existing_membership:
+            return Response({
+                "detail": "You already have a membership for this gym."
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create the membership instance
+        membership = Membership.objects.create(
+            user=request.user,
+            gym=gym,
+            expiration_date=self.calculate_expiration_date(membership_type),
+            membership_type=membership_type
+        )
+
+        serializer = self.get_serializer(membership)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def calculate_expiration_date(self, membership_type):
+        from datetime import timedelta, date
+        
+        if membership_type == 'day':
+            return date.today() + timedelta(days=1)
+        elif membership_type == 'weekly':
+            return date.today() + timedelta(weeks=1)
+        elif membership_type == 'monthly':
+            return date.today() + timedelta(days=30)
+        elif membership_type == 'quarterly':
+            return date.today() + timedelta(days=90)
+        elif membership_type == 'annually':
+            return date.today() + timedelta(days=365)
+        else:
+            raise ValueError('Invalid membership type')
+
+
+class customerMembershipViewset(viewsets.ModelViewSet):
+
+    serializer_class = MembershipSerializer
+    permission_classes= [IsAuthenticated]
+
+    def get_queryset(self):
+        # Access request.user in this method
+        return Membership.objects.filter(user=self.request.user)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -184,12 +279,6 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
-from django.shortcuts import render, get_object_or_404
-  
-from django.shortcuts import render, redirect
-from .models import GymInfo
-from django.contrib.auth.decorators import login_required
-
 
 @login_required
 def gym_detail(request, pk):
@@ -222,3 +311,13 @@ def edit_gym_details(request, gym_id):
         'gym_id': gym.id,
     }
     return render(request, 'edit_gym_details.html', context)
+
+
+@login_required
+def customer_membership_options_view(request):
+    # Ensure the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect('login')  # Redirect to login if not authenticated
+
+    # Optionally, you can pass any context you need to the template
+    return render(request, 'membership_options.html')
