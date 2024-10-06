@@ -5,70 +5,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}My Website{% endblock %}</title>
+    <title>{% block title %}My Anime Fitness Website{% endblock %}</title>
     <style>
         /* General Styles */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Comic Sans MS', cursive, sans-serif; /* Anime-style font */
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4; /* Light gray background */
+            background-image: url('https://wallpapercave.com/wp/wp5031686.jpgL'); /* Example background image */
+            background-size: cover;
+            background-position: center;
+            color: #ffffff; /* White text for better contrast */
         }
         
         .container {
-            max-width: 1200px; /* Max width for larger screens */
-            margin: 20px auto; /* Centering the container */
-            padding: 20px; /* Padding inside the container */
-            background-color: #fff; /* White background for content area */
-            border-radius: 8px; /* Rounded corners */
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9); /* Adjusted for better readability */
+            border-radius: 12px;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+            color: #000000; /* Set text color to black for better readability inside the container */
         }
 
         /* Button Styles */
         .button {
             display: inline-block;
-            padding: 8px 16px;
+            padding: 10px 20px;
             margin: 5px 0;
-            font-size: 14px;
+            font-size: 16px;
             cursor: pointer;
             text-decoration: none;
             color: #fff;
-            background-color: #007BFF;
+            background-color: #ff5722; /* Bright orange color */
             border: none;
-            border-radius: 4px;
-            transition: background-color 0.3s;
+            border-radius: 8px;
+            transition: background-color 0.3s, transform 0.3s;
         }
 
         .button:hover {
-            background-color: #0056b3;
+            background-color: #e64a19; /* Darker orange on hover */
+            transform: scale(1.05); /* Slightly enlarge button on hover */
         }
 
         /* Additional styles for forms */
         form div {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
         form label {
             display: block;
             margin-bottom: 5px;
+            font-weight: bold; /* Bold labels */
         }
 
         form input, form textarea {
             width: 100%;
-            padding: 8px;
+            padding: 10px;
+            border: 2px solid #ff5722; /* Orange border */
+            border-radius: 5px;
             box-sizing: border-box;
         }
 
         form button {
-            background-color: #28a745;
+            background-color: #4CAF50; /* Green button */
         }
 
         form button:hover {
-            background-color: #218838;
+            background-color: #388E3C; /* Darker green on hover */
         }
 
         .gym-item {
             margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ff5722; /* Orange border for gym items */
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white for gym items */
         }
 
         .gym-item button {

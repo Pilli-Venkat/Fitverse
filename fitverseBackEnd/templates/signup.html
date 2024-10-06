@@ -1,14 +1,9 @@
-<!-- signup.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-</head>
-<body>
+<!-- gym/templates/signup.html -->
+{% extends 'base.html' %}
 
+{% block title %}Signup{% endblock %}
+
+{% block content %}
     <h1>Signup</h1>
 
     <form id="signup-form">
@@ -30,7 +25,7 @@
             <input type="text" name="phone_number" required>
         </div>
         <div>
-            <label for="password1">Password:</label>
+            <label for="password">Password:</label>
             <input type="password" name="password" required>
         </div>
         <div>
@@ -41,7 +36,7 @@
                 <option value="gym_owner">Gym Owner</option>
             </select>
         </div>
-        <button type="submit">Signup</button>
+        <button type="submit" class="button">Signup</button>
     </form>
 
     <div class="error" style="color: red;">
@@ -50,6 +45,7 @@
         {% endif %}
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
             $('#signup-form').on('submit', function(event) {
@@ -87,6 +83,4 @@
             });
         });
     </script>
-
-</body>
-</html>
+{% endblock %}
