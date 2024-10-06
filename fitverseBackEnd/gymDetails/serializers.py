@@ -30,6 +30,8 @@ class CreateGymInfoSerializer(serializers.ModelSerializer):
         
         validated_data['owner'] = user  # Set the owner to the current user
         return super().create(validated_data)
+    
+    
 # To create or register User
 
 class CreateUserSerializer(serializers.ModelSerializer):

@@ -14,7 +14,6 @@ from rest_framework import status
 class GymInfoViewSet(viewsets.ModelViewSet):
 
     permission_classes = [IsAuthenticated]  # Require authentication
-
     def get_queryset(self):
         # Access request.user in this method
         return GymInfo.objects.filter(owner=self.request.user)
@@ -24,6 +23,16 @@ class GymInfoViewSet(viewsets.ModelViewSet):
             return CreateGymInfoSerializer  # Use CreateGymInfoSerializer for POST, PUT, PATCH
         return GymInfoSerializer  # Use GymInfoSerializer for other methods
     
+
+class createGymInfoViewSet(viewsets.ModelViewSet):
+
+    permission_classes = [IsAuthenticated]  # Require authentication
+    serializer_class = CreateGymInfoSerializer
+    def get_queryset(self):
+        # Access request.user in this method
+        return GymInfo.objects.filter(owner=self.request.user)
+    
+
 
 class CreateUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
@@ -209,3 +218,23 @@ def gym_detail(request, pk):  # Ensure it accepts pk
     return render(request, 'gym_detail.html', {'gym': gym})
 
 # Need to fix this part
+  
+from django.shortcuts import render, redirect
+from .models import GymInfo
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def add_gym_details(request):
+    if request.method == 'POST':
+        # Get form data
+        gym_name = request.POST.get('gym_name')
+        description = request.POST.get('description')
+        city = request.POST.get('city')
+
+        # Save the gym details
+        GymInfo.objects.create(owner=request.user, gym_name=gym_name, description=description, city=city)
+
+        # Redirect to a success page or home
+        return redirect('home')  # Assuming 'home' is a defined URL name
+
+    return render(request, 'add_gym_details.html')
