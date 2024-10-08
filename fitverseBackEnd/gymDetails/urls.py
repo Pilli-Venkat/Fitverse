@@ -10,6 +10,7 @@ router.register(r'gymlist', views.GymDetailsforCustomerViewSet, basename='gymlis
 router.register(r'gyms', views.createGymInfoViewSet, basename='gyms')
 router.register(r'memberships', views.MembershipViewSet,basename = 'memberships')
 router.register(r'customerMemberships', views.customerMembershipViewset,basename = 'customerMemberships')
+router.register(r'gymOwnerMemberships', views.gymOwnerMemberShipViewset,basename = 'gymOwnerMemberships')
 
 urlpatterns = [
     # API routes
@@ -29,4 +30,5 @@ urlpatterns = [
     path('addGymdetails/', views.add_gym_details, name='add_gym_details'),
     path('edit-gym/<int:gym_id>/', views.edit_gym_details, name='edit_gym_details'),
     path('membership-options/', views.customer_membership_options_view, name='membership-options'),
+    path('gym-owner/memberships/', views.gym_owner_memberships_page, name='gym_owner_memberships'),
 ]

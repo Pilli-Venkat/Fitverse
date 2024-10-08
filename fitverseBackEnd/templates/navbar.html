@@ -1,17 +1,23 @@
-<!-- gym/templates/navbar.html -->
-
-<!-- gym/templates/navbar.html -->
-
 <nav>
     <div class="nav-container">
         <ul class="nav-links">
             <li><a href="{% url 'home' %}">Home</a></li>
-            <li><a href="{% url 'membership-options' %}">Membership Options</a></li>  <!-- Add this line -->
+            
+            <!-- Conditionally show Membership Options for customers -->
+            {% if user.is_authenticated and user.user_type == 'customer' %}
+                <li><a href="{% url 'membership-options' %}">Membership Options</a></li>
+            {% endif %}
+
+            <!-- Conditionally show Subscriptions link for gym owners -->
+            {% if user.is_authenticated and user.user_type == 'gym_owner' %}
+                <li><a href="{% url 'gym_owner_memberships' %}">Subscriptions</a></li> <!-- Link for gym owners -->
+            {% endif %}
         </ul>
+
         <div class="user-info">
             {% if user.is_authenticated %}
                 <span class="welcome-message">Welcome, {{ user.first_name }}!</span>
-                <span class="welcome-message">User {{ user.user_type }}!</span>
+                <span class="welcome-message">{{ user.user_type|capfirst }}!</span>
                 <li><a href="{% url 'logout' %}">Logout</a></li>
             {% else %}
                 <li><a href="{% url 'login' %}">Login</a></li>

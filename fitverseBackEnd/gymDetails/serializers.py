@@ -49,9 +49,17 @@ class CreateUserSerializer(serializers.ModelSerializer):
 from rest_framework import serializers
 from .models import Membership
 
-class MembershipSerializer(serializers.ModelSerializer):
+class customerMembershipSerializer(serializers.ModelSerializer):
+    days_until_expiration = serializers.ReadOnlyField() 
     gym = GymInfoSerializer()
     class Meta:
         model = Membership
-        fields = ['id', 'user', 'gym', 'start_date', 'expiration_date', 'membership_type']
+        fields = ['id', 'user', 'gym', 'start_date', 'expiration_date', 'membership_type','days_until_expiration']
+
+class gymOwnerMembershipSerializer(serializers.ModelSerializer):
+    days_until_expiration = serializers.ReadOnlyField() 
+    user = CustomUserSerializer()
+    class Meta:
+        model = Membership
+        fields = ['id', 'user', 'gym', 'start_date', 'expiration_date', 'membership_type','days_until_expiration']
 

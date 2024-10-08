@@ -2,14 +2,14 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from .models import GymInfo, CustomUser,Membership
-from .serializers import GymInfoSerializer, CreateGymInfoSerializer, CreateUserSerializer,MembershipSerializer
+from .serializers import GymInfoSerializer, CreateGymInfoSerializer, CreateUserSerializer
 from rest_framework import decorators
 from rest_framework.decorators import api_view,permission_classes
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from rest_framework import status
 
-
+from . import serializers
 
 from django.shortcuts import render, get_object_or_404,redirect
 from django.contrib.auth.decorators import login_required
@@ -142,7 +142,7 @@ class GymDetailsforCustomerViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = GymInfoSerializer
 
 class MembershipViewSet(viewsets.ModelViewSet):
-    serializer_class = MembershipSerializer
+    serializer_class = serializers.customerMembershipSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -198,7 +198,7 @@ class MembershipViewSet(viewsets.ModelViewSet):
 
 class customerMembershipViewset(viewsets.ModelViewSet):
 
-    serializer_class = MembershipSerializer
+    serializer_class = serializers.customerMembershipSerializer
     permission_classes= [IsAuthenticated]
 
     def get_queryset(self):
@@ -206,8 +206,16 @@ class customerMembershipViewset(viewsets.ModelViewSet):
         return Membership.objects.filter(user=self.request.user)
 
 
+class gymOwnerMemberShipViewset(viewsets.ModelViewSet):
 
+    serializer_class = serializers.gymOwnerMembershipSerializer
+    permission_classes= [IsAuthenticated]
 
+    def get_queryset(self):
+        # Get all gyms owned by the logged-in gym owner (request.user)
+        owner_gyms = GymInfo.objects.filter(owner=self.request.user)
+        # Return all memberships associated with those gyms
+        return Membership.objects.filter(gym__in=owner_gyms)
 
 
 
@@ -321,3 +329,7 @@ def customer_membership_options_view(request):
 
     # Optionally, you can pass any context you need to the template
     return render(request, 'membership_options.html')
+
+@login_required
+def gym_owner_memberships_page(request):
+    return render(request, 'gym_owner_memberships.html')
