@@ -12,9 +12,10 @@
         <!-- Membership options or details will be populated here -->
     </div>
 
-    <h3>Membership Options</h3>
+    
     <form id="membership-form" style="display: none;">  <!-- Hide this form by default -->
         {% csrf_token %}
+        <h3>Membership Options</h3>
         <label for="membership_type">Membership Type:</label>
         <select name="membership_type" id="membership_type" required>
             <option value="day">Day</option>
