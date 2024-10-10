@@ -36,6 +36,18 @@ class Membership(models.Model):
 
     @property
     def days_until_expiration(self):
-        """Calculate the number of days until expiration."""
-        delta = self.expiration_date - timezone.now().date()
-        return delta.days if delta.days >= 0 else 0  # Returns 0 if the expiration date has passed
+        today = timezone.now().date()
+
+        # Case 1: Plan has not started yet
+        if self.start_date > today:
+            days_until_start = (self.start_date - today).days
+            return f"Start in {days_until_start} days"
+
+        # Case 2: Plan has started, but not expired
+        elif self.start_date <= today <= self.expiration_date:
+            days_until_expiration = (self.expiration_date - today).days
+            return f"Expire in {days_until_expiration} days"
+
+        # Case 3: Plan has expired
+        else:
+            return "Plan has expired"
