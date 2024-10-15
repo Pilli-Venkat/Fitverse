@@ -12,6 +12,9 @@ router.register(r'memberships', views.MembershipViewSet,basename = 'memberships'
 router.register(r'customerMemberships', views.customerMembershipViewset,basename = 'customerMemberships')
 router.register(r'gymOwnerMemberships', views.gymOwnerMemberShipViewset,basename = 'gymOwnerMemberships')
 
+
+router.register(r'ownerCreatedmemberships', views.GymOwnerCreatedMembershipViewSet,basename = 'gymOwnerCreatedMemberships')
+
 urlpatterns = [
     # API routes
     path('api/', include(router.urls)),  # API endpoints

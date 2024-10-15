@@ -1,8 +1,8 @@
 # gymDetails/views.py
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from .models import GymInfo, CustomUser,Membership
-from .serializers import GymInfoSerializer, CreateGymInfoSerializer, CreateUserSerializer
+from .models import GymInfo, CustomUser,Membership,GymOwnerCreatedMembership
+from .serializers import GymInfoSerializer, CreateGymInfoSerializer, CreateUserSerializer,GymOwnerCreatedMembershipSerializer
 from rest_framework import decorators
 from rest_framework.decorators import api_view,permission_classes
 from rest_framework.response import Response
@@ -221,16 +221,37 @@ class gymOwnerMemberShipViewset(viewsets.ModelViewSet):
 
 
 
+from rest_framework import viewsets, status
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
+from .models import Membership, GymInfo
+from .serializers import GymOwnerCreatedMembershipSerializer
+from datetime import timedelta
+from django.utils import timezone
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+from .models import GymInfo, GymOwnerCreatedMembership
+from .serializers import GymOwnerCreatedMembershipSerializer
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from .models import GymInfo, GymOwnerCreatedMembership
+from .serializers import GymOwnerCreatedMembershipSerializer
 
 
+class GymOwnerCreatedMembershipViewSet(viewsets.ModelViewSet):
+    serializer_class = GymOwnerCreatedMembershipSerializer
+    permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        # Get all gyms owned by the logged-in gym owner (request.user)
+        owner_gyms = GymInfo.objects.filter(owner=self.request.user)
+        return GymOwnerCreatedMembership.objects.filter(gym__in=owner_gyms)
 
-
-
-
-
-
-
+    
 
 
 
