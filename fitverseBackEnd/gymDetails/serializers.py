@@ -67,19 +67,43 @@ from .models import GymOwnerCreatedMembership, GymInfo
 from django.utils import timezone
 from datetime import timedelta
 
+from django.utils import timezone
+from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+from .models import GymOwnerCreatedMembership, GymInfo  # Adjust import based on your project structure
+
+from django.utils import timezone
+from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+from .models import GymOwnerCreatedMembership, GymInfo  # Adjust import based on your project structure
+from datetime import timedelta
+
+from django.utils import timezone
+from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+from .models import GymOwnerCreatedMembership, GymInfo  # Adjust import based on your project structure
+from datetime import timedelta
+from django.utils import timezone
+from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+from .models import GymOwnerCreatedMembership, GymInfo  # Adjust import based on your project structure
+from datetime import timedelta
 
 class GymOwnerCreatedMembershipSerializer(serializers.ModelSerializer):
     days_until_expiration = serializers.ReadOnlyField()
-    #user = CustomUserSerializer()
+    membership_status = serializers.ReadOnlyField()  # New field for status
     gym = serializers.PrimaryKeyRelatedField(queryset=GymInfo.objects.none())
-
+    expiration_date = serializers.ReadOnlyField()  # Make expiration_date read-only
     class Meta:
         model = GymOwnerCreatedMembership
-        fields = ['id', 'first_name', 'last_name', 'phone_number', 'address', 'gym', 'start_date', 'membership_type', 'days_until_expiration']
+        fields = [
+            'id', 'first_name', 'last_name', 'phone_number', 
+            'address', 'gym', 'start_date', 'membership_type', 
+            'days_until_expiration', 'membership_status','expiration_date'
+        ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Accessing the request and user from the context
         request = self.context.get('request')
         if request and hasattr(request, 'user'):
             # Filtering gyms based on the logged-in user (who is the gym owner)
@@ -92,15 +116,61 @@ class GymOwnerCreatedMembershipSerializer(serializers.ModelSerializer):
         # Ensuring only gym owners can add memberships
         if user.user_type != 'gym_owner':
             raise ValidationError("You are not allowed to add GymInfo because you are not a gym owner.")
-        
+
+        # Check for an existing membership with the same phone number
+        existing_membership = GymOwnerCreatedMembership.objects.filter(
+            phone_number=validated_data['phone_number'],
+            gym=validated_data['gym']
+        )
+
+        # Get today's date
+        today = timezone.now().date()
+
+        # Check if there's an active or upcoming membership
+        active_or_upcoming = existing_membership.filter(
+            start_date__lte=today,
+            expiration_date__gte=today
+        ).exists()
+
+        if active_or_upcoming:
+            raise ValidationError(f"Membership is already active for this phone number- {validated_data['phone_number']}")
+
+        # Check for memberships that start in the future
+        upcoming_membership = existing_membership.filter(
+            start_date__gt=today
+        ).exists()
+
+        if upcoming_membership:
+            raise ValidationError("Membership starts in the future for this phone number.")
+
+        # Calculate the expiration date based on membership type and start date
         validated_data['expiration_date'] = self.calculate_expiration_date(
             validated_data['membership_type'], validated_data['start_date']
         )
+
         return super().create(validated_data)
+    def update(self, instance, validated_data):
+        # Update the instance with validated data
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.phone_number = validated_data.get('phone_number', instance.phone_number)
+        instance.address = validated_data.get('address', instance.address)
+        instance.start_date = validated_data.get('start_date', instance.start_date)
+        instance.membership_type = validated_data.get('membership_type', instance.membership_type)
+        
+        # Calculate new expiration date
+        instance.expiration_date = self.calculate_expiration_date(
+            instance.membership_type, instance.start_date
+        )
+
+
+        # Save the updated instance
+        instance.save()
+        return instance
 
     def calculate_expiration_date(self, membership_type, start_date):
         membership_durations = {
-            'day': timedelta(days=1),
+            'day': timedelta(days=0),
             'weekly': timedelta(weeks=1),
             'monthly': timedelta(weeks=4),
             'quarterly': timedelta(weeks=12),

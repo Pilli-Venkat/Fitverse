@@ -10,7 +10,8 @@
 
             <!-- Conditionally show Subscriptions link for gym owners -->
             {% if user.is_authenticated and user.user_type == 'gym_owner' %}
-                <li><a href="{% url 'gym_owner_memberships' %}">Subscriptions</a></li> <!-- Link for gym owners -->
+                <li><a href="{% url 'gym_owner_memberships' %}">Subscriptions</a></li>
+                <li><a href="{% url 'create_membership' %}">Create Membership</a></li> <!-- Link for creating memberships -->
             {% endif %}
         </ul>
 

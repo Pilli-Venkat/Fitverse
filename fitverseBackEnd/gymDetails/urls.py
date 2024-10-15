@@ -20,6 +20,7 @@ urlpatterns = [
     path('api/', include(router.urls)),  # API endpoints
     path('api/my_user/', views.userDetails, name='api-my-user'),
     path('api/updateUser/', views.updateUserDetails, name='api-update-user'),
+   
 
 
 
@@ -34,4 +35,5 @@ urlpatterns = [
     path('edit-gym/<int:gym_id>/', views.edit_gym_details, name='edit_gym_details'),
     path('membership-options/', views.customer_membership_options_view, name='membership-options'),
     path('gym-owner/memberships/', views.gym_owner_memberships_page, name='gym_owner_memberships'),
+    path('create-membership/', views.create_membership_view, name='create_membership'),
 ]

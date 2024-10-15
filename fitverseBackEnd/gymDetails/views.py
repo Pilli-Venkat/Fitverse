@@ -240,6 +240,15 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import GymInfo, GymOwnerCreatedMembership
 from .serializers import GymOwnerCreatedMembershipSerializer
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.exceptions import ValidationError
+from .models import GymOwnerCreatedMembership
 
 
 class GymOwnerCreatedMembershipViewSet(viewsets.ModelViewSet):
@@ -247,22 +256,21 @@ class GymOwnerCreatedMembershipViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        # Get all gyms owned by the logged-in gym owner (request.user)
         owner_gyms = GymInfo.objects.filter(owner=self.request.user)
         return GymOwnerCreatedMembership.objects.filter(gym__in=owner_gyms)
 
-    
 
+    def destroy(self, request, *args, **kwargs):
+        # Get the membership instance to be deleted
+        membership = self.get_object()
 
+        # Check if the membership can be deleted
+        if membership.expiration_date >= timezone.now().date():
+            raise ValidationError("You cannot delete an active membership.")
 
-
-
-
-
-
-
-
-
+        # Proceed to delete the membership
+        membership.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 
@@ -354,3 +362,8 @@ def customer_membership_options_view(request):
 @login_required
 def gym_owner_memberships_page(request):
     return render(request, 'gym_owner_memberships.html')
+
+# View to render the membership creation page
+def create_membership_view(request):
+    return render(request, 'create_membership.html')
+

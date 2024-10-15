@@ -48,7 +48,6 @@ class Membership(models.Model):
         else:
             return "Plan has expired"
 
-
 class GymOwnerCreatedMembership(models.Model):
     MEMBERSHIP_TYPE_CHOICES = [
         ('day', 'Day'),
@@ -66,6 +65,7 @@ class GymOwnerCreatedMembership(models.Model):
     start_date = models.DateField()
     expiration_date = models.DateField()
     membership_type = models.CharField(max_length=10, choices=MEMBERSHIP_TYPE_CHOICES)
+    #created_at = models.DateTimeField(auto_now_add=True)  # Automatically set on creation
 
     def __str__(self):
         return f'{self.first_name} {self.last_name} - {self.gym.gym_name} ({self.get_membership_type_display()})'
@@ -74,16 +74,26 @@ class GymOwnerCreatedMembership(models.Model):
     def days_until_expiration(self):
         today = timezone.now().date()
 
-        # Case 1: Plan has not started yet
         if self.start_date > today:
             days_until_start = (self.start_date - today).days
-            return f"Start in {days_until_start} days"
-
-        # Case 2: Plan has started, but not expired
+            return f"Starts in {days_until_start} days"
         elif self.start_date <= today <= self.expiration_date:
             days_until_expiration = (self.expiration_date - today).days
-            return f"Expire in {days_until_expiration} days"
-
-        # Case 3: Plan has expired
+            return f"Expires in {days_until_expiration} days"
         else:
-            return "Plan has expired"
+            days_since_expiration = (today - self.expiration_date).days
+            if days_since_expiration < 5:
+                return f"Expired before {days_since_expiration} days"
+            else:
+                return "Expired"
+
+
+    @property
+    def membership_status(self):
+        today = timezone.now().date()
+        if self.start_date > today:
+            return "Upcoming"
+        elif self.start_date <= today <= self.expiration_date:
+            return "Active"
+        else:
+            return "Expired"

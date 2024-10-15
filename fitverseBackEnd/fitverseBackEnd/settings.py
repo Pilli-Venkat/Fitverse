@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'Users',
     'gymDetails',
-    'django_extensions'
+    'django_extensions',
+    'corsheaders'
 ]
 AUTH_USER_MODEL = 'Users.CustomUser'
 
@@ -65,6 +66,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'fitverseBackEnd.urls'
