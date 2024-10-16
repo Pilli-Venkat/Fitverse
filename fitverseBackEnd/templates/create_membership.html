@@ -4,7 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gym Membership Management</title>
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap CSS (Optional for better modal UI) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap JS (Optional for better modal UI) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,7 +17,7 @@
             padding: 20px;
             border: 1px solid #ccc;
             border-radius: 10px;
-            width: 600px;
+            width: 800px;
             background-color: #f9f9f9;
         }
         table {
@@ -37,48 +42,46 @@
 
     <h1>Gym Membership Management</h1>
 
-    <h2>Create Membership</h2>
-    <input type="text" id="firstName" placeholder="First Name" required>
-    <input type="text" id="lastName" placeholder="Last Name" required>
-    <input type="text" id="phoneNumber" placeholder="Phone Number" required>
-    <input type="text" id="address" placeholder="Address" required>
-    <input type="date" id="startDate" placeholder="Start Date" required>
-    <select id="membershipType">
-        <option value="" disabled selected>Select Membership Type</option>
-        <option value="day">Day</option>
-        <option value="weekly">Weekly</option>
-        <option value="monthly">Monthly</option>
-        <option value="quarterly">Quarterly</option>
-        <option value="annually">Annually</option>
-    </select>
-    <select id="gymSelect">
-        <option value="" disabled selected>Select Gym</option>
-        <!-- Gym options will be populated here -->
-    </select>
-    <button id="createMembershipButton">Create Membership</button>
+    <!-- Check Membership Section -->
+    <h2>Check Phone Number / Create Membership</h2>
+    <div class="mb-3">
+        <input type="text" id="phoneNumber" class="form-control" placeholder="Phone Number" required>
+    </div>
+    <button id="checkPhoneNumberButton" class="btn btn-primary">Check Membership</button>
+
     <div id="responseMessage" class="responseMessage"></div>
 
-    <h2>Existing Memberships</h2>
-    <table id="membershipsTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Phone Number</th>
-                <th>Address</th>
-                <th>Start Date</th>
-                <th>Membership Type</th>
-                <th>Days Until Expiration</th>
-                <th>Membership Status</th>
-                <th>Expiration Date</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Memberships will be populated here -->
-        </tbody>
-    </table>
+    <!-- Create or Extend Membership Section -->
+    <h2 class="mt-4">Create or Extend Membership</h2>
+    <div class="mb-3">
+        <input type="text" id="firstName" class="form-control" placeholder="First Name">
+    </div>
+    <div class="mb-3">
+        <input type="text" id="lastName" class="form-control" placeholder="Last Name">
+    </div>
+    <div class="mb-3">
+        <input type="text" id="address" class="form-control" placeholder="Address">
+    </div>
+    <div class="mb-3">
+        <input type="date" id="startDate" class="form-control" placeholder="Start Date">
+    </div>
+    <div class="mb-3">
+        <select id="membershipType" class="form-control">
+            <option value="" disabled selected>Select Membership Type</option>
+            <option value="day">Day</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+            <option value="quarterly">Quarterly</option>
+            <option value="annually">Annually</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <select id="gymSelect" class="form-control">
+            <option value="" disabled selected>Select Gym</option>
+            <!-- Gym options will be populated here -->
+        </select>
+    </div>
+    <button id="createMembershipButton" class="btn btn-success">Create/Extend Membership</button>
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -89,7 +92,6 @@
                     const cookies = document.cookie.split(';');
                     for (let i = 0; i < cookies.length; i++) {
                         const cookie = cookies[i].trim();
-                        // Check if this cookie string begins with the name we want
                         if (cookie.substring(0, name.length + 1) === (name + '=')) {
                             cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                             break;
@@ -98,13 +100,12 @@
                 }
                 return cookieValue;
             }
-
             const csrftoken = getCookie('csrftoken');
 
             // Function to load existing gyms
             function loadGyms() {
                 $.ajax({
-                    url: "/api/gyminfo/", // Replace with your endpoint for getting gyms
+                    url: "/api/gyminfo/", // Ensure this endpoint is correct
                     method: "GET",
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
@@ -112,6 +113,8 @@
                     },
                     success: function(gyms) {
                         const gymSelect = $('#gymSelect');
+                        gymSelect.empty(); // Clear existing options
+                        gymSelect.append(`<option value="" disabled selected>Select Gym</option>`);
                         gyms.forEach(gym => {
                             gymSelect.append(`<option value="${gym.id}">${gym.gym_name}</option>`);
                         });
@@ -123,58 +126,64 @@
                 });
             }
 
-            // Function to load existing memberships
-            function loadMemberships() {
-                $.ajax({
-                    url: "/api/ownerCreatedmemberships/",
-                    method: "GET",
-                    headers: {
-                        'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-                        'Content-Type': 'application/json'
-                    },
-                    success: function(memberships) {
-                        const tbody = $('#membershipsTable tbody');
-                        tbody.empty(); // Clear existing rows
-                        memberships.forEach(membership => {
-                            tbody.append(`
-                                <tr>
-                                    <td>${membership.id}</td>
-                                    <td>${membership.first_name}</td>
-                                    <td>${membership.last_name}</td>
-                                    <td>${membership.phone_number}</td>
-                                    <td>${membership.address}</td>
-                                    <td>${membership.start_date}</td>
-                                    <td>${membership.membership_type}</td>
-                                    <td>${membership.days_until_expiration}</td>
-                                    <td>${membership.membership_status}</td>
-                                    <td>${membership.expiration_date}</td>
-                                    <td>
-                                        <button class="deleteMembershipButton" data-id="${membership.id}">Delete</button>
-                                    </td>
-                                </tr>
-                            `);
-                        });
-                    },
-                    error: function(xhr) {
-                        console.error("Error fetching memberships:", xhr.responseText);
-                        $('#responseMessage').text('Failed to load memberships.').css('color', 'red');
-                    }
-                });
-            }
-
-            // Load gyms and memberships on page load
+            // Load gyms on page load
             loadGyms();
-            loadMemberships();
 
-            // Create Membership Button Click Event
+            // Variable to store existing membership data
+            let existingMembership = null;
+
+            // Check Phone Number Button Click Event
+            $('#checkPhoneNumberButton').on('click', function() {
+                let phoneNumber = $('#phoneNumber').val().trim();
+                if (phoneNumber) {
+                    $.ajax({
+                        url: `/api/ownerCreatedmemberships/check_phone/${phoneNumber}/`,
+                        method: 'GET',
+                        headers: {
+                            'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                            'Content-Type': 'application/json'
+                        },
+                        success: function(response) {
+                            if (response.exists) {
+                                existingMembership = response; // Store existing membership data
+                                $('#responseMessage').text('Membership exists for this phone number.').css('color', 'green');
+                                
+                                // Pre-fill some fields
+                                $('#firstName').val(response.first_name);
+                                $('#lastName').val(response.last_name);
+                                $('#address').val(response.address);
+                                $('#startDate').val(response.start_date);
+                                $('#membershipType').val(response.membership_type);
+                                $('#gymSelect').val(response.gym);
+
+                                if (response.membership_status === "active") {
+                                    $('#responseMessage').append('<p>This membership is currently active.</p>');
+                                } else {
+                                    $('#responseMessage').append('<p>This membership is not active. You can create a new membership.</p>');
+                                }
+                            } else {
+                                $('#responseMessage').text('No membership found. You can create a new one.').css('color', 'green');
+                                existingMembership = null;
+                            }
+                        },
+                        error: function(xhr) {
+                            $('#responseMessage').text('Error checking membership: ' + xhr.responseText).css('color', 'red');
+                        }
+                    });
+                } else {
+                    $('#responseMessage').text('Please enter a phone number.').css('color', 'red');
+                }
+            });
+
+            // Create or Extend Membership Button Click Event
             $('#createMembershipButton').on('click', function() {
-                let firstName = $('#firstName').val();
-                let lastName = $('#lastName').val();
-                let phoneNumber = $('#phoneNumber').val();
-                let address = $('#address').val();
+                let firstName = $('#firstName').val().trim();
+                let lastName = $('#lastName').val().trim();
+                let phoneNumber = $('#phoneNumber').val().trim();
+                let address = $('#address').val().trim();
                 let startDate = $('#startDate').val();
                 let membershipType = $('#membershipType').val();
-                let gymId = $('#gymSelect').val(); // Get the selected gym ID
+                let gymId = $('#gymSelect').val();
 
                 if (firstName && lastName && phoneNumber && address && startDate && membershipType && gymId) {
                     $.ajax({
@@ -183,7 +192,7 @@
                         headers: {
                             'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
                             'Content-Type': 'application/json',
-                            'X-CSRFToken': csrftoken // Include CSRF token
+                            'X-CSRFToken': csrftoken 
                         },
                         data: JSON.stringify({
                             "first_name": firstName,
@@ -192,7 +201,7 @@
                             "address": address,
                             "start_date": startDate,
                             "membership_type": membershipType,
-                            "gym": gymId  // Include the gym ID
+                            "gym": gymId  
                         }),
                         success: function() {
                             $('#responseMessage').text('Membership created successfully!').css('color', 'green');
@@ -200,39 +209,27 @@
                             $('#firstName, #lastName, #phoneNumber, #address, #startDate').val('');
                             $('#membershipType').val(''); // Reset membership type
                             $('#gymSelect').val(''); // Reset gym selection
-                            loadMemberships(); // Reload memberships
+                            loadGyms(); // Reload gyms in case of any changes
+                            existingMembership = null;
                         },
                         error: function(xhr) {
-                            $('#responseMessage').text('Failed to create membership: ' + xhr.responseText).css('color', 'red');
+                            // Handle validation errors separately
+                            if (xhr.status === 400 && xhr.responseJSON) {
+                                let errorMessages = '';
+                                for (const [key, value] of Object.entries(xhr.responseJSON)) {
+                                    errorMessages += `${key}: ${value}<br>`;
+                                }
+                                $('#responseMessage').html(`Failed to create membership:<br>${errorMessages}`).css('color', 'red');
+                            } else {
+                                $('#responseMessage').text('Failed to create membership: ' + xhr.responseText).css('color', 'red');
+                            }
                         }
                     });
                 } else {
                     $('#responseMessage').text('Please fill in all fields.').css('color', 'red');
                 }
             });
-
-            // Delete Membership Button Click Event
-            $(document).on('click', '.deleteMembershipButton', function() {
-                const membershipId = $(this).data('id');
-                $.ajax({
-                    url: `/api/ownerCreatedmemberships/${membershipId}/`,
-                    method: "DELETE",
-                    headers: {
-                        'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': csrftoken // Include CSRF token
-                    },
-                    success: function() {
-                        $('#responseMessage').text('Membership deleted successfully!').css('color', 'green');
-                        loadMemberships(); // Reload memberships
-                    },
-                    error: function(xhr) {
-                        $('#responseMessage').text('Failed to delete membership: ' + xhr.responseText).css('color', 'red');
-                    }
-                });
-            });
         });
     </script>
-
 </body>
 </html>

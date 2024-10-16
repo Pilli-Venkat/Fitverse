@@ -91,9 +91,59 @@
         </div>
       </div>
     </div>
+
+    <!-- Extend Membership Modal -->
+    <div class="modal fade" id="extendMembershipModal" tabindex="-1" aria-labelledby="extendMembershipModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="extendMembershipModalLabel">Extend Membership</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="extendMembershipForm">
+                <input type="hidden" id="extendMembershipId">
+                <input type="hidden" id="extendGym"> <!-- Hidden field for gym -->
+                <div class="mb-3">
+                    <label for="extendFirstName" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="extendFirstName" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="extendLastName" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="extendLastName" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="extendPhoneNumber" class="form-label">Phone Number</label>
+                    <input type="text" class="form-control" id="extendPhoneNumber" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="extendAddress" class="form-label">Address</label>
+                    <input type="text" class="form-control" id="extendAddress" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="extendStartDate" class="form-label">New Start Date</label>
+                    <input type="date" class="form-control" id="extendStartDate" required>
+                </div>
+                <div class="mb-3">
+                    <label for="extendMembershipType" class="form-label">New Membership Type</label>
+                    <select class="form-select" id="extendMembershipType" required>
+                        <option value="day">Day</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                        <option value="annually">Annually</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success">Extend Membership</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script type="text/javascript">
         $(document).ready(function() {
-            // Get CSRF token from cookies
+            // Function to get CSRF token from cookies
             function getCookie(name) {
                 let cookieValue = null;
                 if (document.cookie && document.cookie !== '') {
@@ -108,10 +158,10 @@
                 }
                 return cookieValue;
             }
-    
+
             const csrftoken = getCookie('csrftoken');
-    
-            // Initialize DataTable with AJAX, with pagination, sorted by expiration_date
+
+            // Initialize DataTable with AJAX, pagination, sorted by expiration_date
             const table = $('#membershipsTable').DataTable({
                 "ajax": {
                     "url": "/api/ownerCreatedmemberships/",
@@ -143,6 +193,7 @@
                             return `
                                 <button class="btn btn-sm btn-primary editMembershipButton" data-id="${row.id}">Edit</button>
                                 <button class="btn btn-sm btn-danger deleteMembershipButton" data-id="${row.id}">Delete</button>
+                                <button class="btn btn-sm btn-success extendMembershipButton" data-id="${row.id}">Extend</button>
                             `;
                         },
                         "orderable": false
@@ -150,14 +201,12 @@
                 ],
                 "ordering": true,
                 "order": [[9, "desc"]], // Sort by expiration_date (index 9) in descending order
-                "paging": true, // Enable pagination
+                "paging": false, // Enable pagination
                 "info": true, // Enable table information display
                 "searching": true, // Enable search box
                 "lengthChange": true // Enable changing the number of records per page
             });
-    
-            // (Other existing code remains the same)
-    
+
             // Delete Membership Button Click Event
             $('#membershipsTable').on('click', '.deleteMembershipButton', function() {
                 const membershipId = $(this).data('id');
@@ -180,7 +229,7 @@
                     });
                 }
             });
-    
+
             // Edit Membership Button Click Event
             $('#membershipsTable').on('click', '.editMembershipButton', function() {
                 const membershipId = $(this).data('id');
@@ -202,7 +251,7 @@
                         $('#editStartDate').val(membership.start_date);
                         $('#editMembershipType').val(membership.membership_type);
                         $('#editGym').val(membership.gym);
-    
+
                         // Show the modal
                         $('#editMembershipModal').modal('show');
                     },
@@ -212,7 +261,7 @@
                     }
                 });
             });
-    
+
             // Handle Edit Membership Form Submission
             $('#editMembershipForm').submit(function(e) {
                 e.preventDefault();
@@ -226,7 +275,7 @@
                     membership_type: $('#editMembershipType').val(),
                     gym: $('#editGym').val() // Include gym field
                 };
-    
+
                 $.ajax({
                     url: `/api/ownerCreatedmemberships/${membershipId}/`,
                     method: "PUT",
@@ -246,9 +295,81 @@
                     }
                 });
             });
+
+            // Extend Membership Button Click Event
+            $('#membershipsTable').on('click', '.extendMembershipButton', function() {
+                const membershipId = $(this).data('id');
+                // Fetch membership details
+                $.ajax({
+                    url: `/api/ownerCreatedmemberships/${membershipId}/`,
+                    method: "GET",
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                        'Content-Type': 'application/json'
+                    },
+                    success: function(membership) {
+                        // Populate the form fields with existing data
+                        $('#extendMembershipId').val(membership.id);
+                        $('#extendFirstName').val(membership.first_name);
+                        $('#extendLastName').val(membership.last_name);
+                        $('#extendPhoneNumber').val(membership.phone_number);
+                        $('#extendAddress').val(membership.address);
+                        $('#extendGym').val(membership.gym);
+
+                        // Auto-fill the New Start Date as the day after current expiration date
+                        const currentExpiration = new Date(membership.expiration_date);
+                        currentExpiration.setDate(currentExpiration.getDate() + 1);
+                        const formattedDate = currentExpiration.toISOString().split('T')[0];
+                        $('#extendStartDate').val(formattedDate);
+
+                        // Optionally, set the default membership type or allow user to select
+                        $('#extendMembershipType').val('monthly'); // Default value
+
+                        // Show the modal
+                        $('#extendMembershipModal').modal('show');
+                    },
+                    error: function(xhr) {
+                        console.error("Error fetching membership details:", xhr.responseText);
+                        $('#responseMessage').text('Failed to fetch membership details.').css('color', 'red');
+                    }
+                });
+            });
+
+            // Handle Extend Membership Form Submission
+            $('#extendMembershipForm').submit(function(e) {
+                e.preventDefault();
+                const existingMembershipId = $('#extendMembershipId').val();
+                const newMembershipData = {
+                    first_name: $('#extendFirstName').val(),
+                    last_name: $('#extendLastName').val(),
+                    phone_number: $('#extendPhoneNumber').val(),
+                    address: $('#extendAddress').val(),
+                    start_date: $('#extendStartDate').val(),
+                    membership_type: $('#extendMembershipType').val(),
+                    gym: $('#extendGym').val()
+                };
+
+                $.ajax({
+                    url: `/api/ownerCreatedmemberships/`,
+                    method: "POST",
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('access_token'),
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken // Include CSRF token
+                    },
+                    data: JSON.stringify(newMembershipData),
+                    success: function() {
+                        $('#responseMessage').text('Membership extended successfully!').css('color', 'green');
+                        $('#extendMembershipModal').modal('hide');
+                        table.ajax.reload(); // Reload memberships
+                    },
+                    error: function(xhr) {
+                        $('#responseMessage').text('Failed to extend membership: ' + xhr.responseText).css('color', 'red');
+                    }
+                });
+            });
         });
     </script>
-    
 
 </body>
 </html>

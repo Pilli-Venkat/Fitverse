@@ -251,6 +251,32 @@ from rest_framework.exceptions import ValidationError
 from .models import GymOwnerCreatedMembership
 
 
+from rest_framework import viewsets, status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from django.utils import timezone
+from .models import GymOwnerCreatedMembership, GymInfo  # Adjust the import based on your project structure
+from .serializers import GymOwnerCreatedMembershipSerializer
+from rest_framework.exceptions import ValidationError
+from rest_framework import viewsets, status
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from .models import GymOwnerCreatedMembership, GymInfo
+from .serializers import GymOwnerCreatedMembershipSerializer
+from rest_framework.permissions import IsAuthenticated
+from django.utils import timezone
+from rest_framework.exceptions import ValidationError
+# views.py
+
+from rest_framework import viewsets, status
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from .models import GymOwnerCreatedMembership, GymInfo
+from .serializers import GymOwnerCreatedMembershipSerializer, GymInfoSerializer
+from rest_framework.permissions import IsAuthenticated
+from django.utils import timezone
+from rest_framework.exceptions import ValidationError
+
 class GymOwnerCreatedMembershipViewSet(viewsets.ModelViewSet):
     serializer_class = GymOwnerCreatedMembershipSerializer
     permission_classes = [IsAuthenticated]
@@ -259,6 +285,21 @@ class GymOwnerCreatedMembershipViewSet(viewsets.ModelViewSet):
         owner_gyms = GymInfo.objects.filter(owner=self.request.user)
         return GymOwnerCreatedMembership.objects.filter(gym__in=owner_gyms)
 
+    @action(detail=False, methods=['get'], url_path='check_phone/(?P<phone_number>[^/.]+)')
+    def check_phone(self, request, phone_number=None):
+        gym_ids = GymInfo.objects.filter(owner=request.user).values_list('id', flat=True)
+        membership = GymOwnerCreatedMembership.objects.filter(
+            phone_number=phone_number, gym__in=gym_ids
+        ).first()
+
+        if membership:
+            serializer = self.get_serializer(membership)
+            return Response({"exists": True, **serializer.data}, status=status.HTTP_200_OK)
+        else:
+            return Response({"exists": False}, status=status.HTTP_200_OK)
+
+    def partial_update(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
         # Get the membership instance to be deleted

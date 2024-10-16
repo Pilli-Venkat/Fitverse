@@ -88,67 +88,84 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from .models import GymOwnerCreatedMembership, GymInfo  # Adjust import based on your project structure
 from datetime import timedelta
+from rest_framework import serializers
+from django.utils import timezone
+from django.core.exceptions import ValidationError
+from datetime import timedelta
+from .models import GymOwnerCreatedMembership, GymInfo  # Adjust the import based on your project structure
+from rest_framework import serializers
+from django.utils import timezone
+from datetime import timedelta
+from rest_framework.exceptions import ValidationError
+from .models import GymOwnerCreatedMembership, GymInfo
+# serializers.py
+
+from rest_framework import serializers
+from django.utils import timezone
+from datetime import timedelta
+from rest_framework.exceptions import ValidationError
+from .models import GymOwnerCreatedMembership, GymInfo
 
 class GymOwnerCreatedMembershipSerializer(serializers.ModelSerializer):
     days_until_expiration = serializers.ReadOnlyField()
-    membership_status = serializers.ReadOnlyField()  # New field for status
+    membership_status = serializers.SerializerMethodField()
     gym = serializers.PrimaryKeyRelatedField(queryset=GymInfo.objects.none())
-    expiration_date = serializers.ReadOnlyField()  # Make expiration_date read-only
+    expiration_date = serializers.ReadOnlyField()
+
     class Meta:
         model = GymOwnerCreatedMembership
         fields = [
             'id', 'first_name', 'last_name', 'phone_number', 
             'address', 'gym', 'start_date', 'membership_type', 
-            'days_until_expiration', 'membership_status','expiration_date'
+            'days_until_expiration', 'membership_status', 'expiration_date'
         ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         request = self.context.get('request')
         if request and hasattr(request, 'user'):
-            # Filtering gyms based on the logged-in user (who is the gym owner)
             self.fields['gym'].queryset = GymInfo.objects.filter(owner=request.user)
+    '''
+    def get_days_until_expiration(self, obj):
+        today = timezone.now().date()
+        delta = obj.expiration_date - today
+        return delta.days if delta.days >= 0 else 0
+    '''
+    def get_membership_status(self, obj):
+        today = timezone.now().date()
+        if obj.start_date <= today <= obj.expiration_date:
+            return "active"
+        elif today < obj.start_date:
+            return "upcoming"
+        else:
+            return "expired"
 
     def create(self, validated_data):
         request = self.context.get('request')
         user = request.user
 
-        # Ensuring only gym owners can add memberships
         if user.user_type != 'gym_owner':
-            raise ValidationError("You are not allowed to add GymInfo because you are not a gym owner.")
+            raise ValidationError("You are not allowed to add memberships.")
 
-        # Check for an existing membership with the same phone number
         existing_membership = GymOwnerCreatedMembership.objects.filter(
-            phone_number=validated_data['phone_number'],
+            phone_number=validated_data['phone_number'], 
             gym=validated_data['gym']
         )
 
-        # Get today's date
         today = timezone.now().date()
-
-        # Check if there's an active or upcoming membership
         active_or_upcoming = existing_membership.filter(
-            start_date__lte=today,
+            start_date__lte=today, 
             expiration_date__gte=today
         ).exists()
 
         if active_or_upcoming:
-            raise ValidationError(f"Membership is already active for this phone number- {validated_data['phone_number']}")
+            raise ValidationError({"phone_number": "A membership with this phone number is already active."})
 
-        # Check for memberships that start in the future
-        upcoming_membership = existing_membership.filter(
-            start_date__gt=today
-        ).exists()
-
-        if upcoming_membership:
-            raise ValidationError("Membership starts in the future for this phone number.")
-
-        # Calculate the expiration date based on membership type and start date
         validated_data['expiration_date'] = self.calculate_expiration_date(
             validated_data['membership_type'], validated_data['start_date']
         )
-
         return super().create(validated_data)
+
     def update(self, instance, validated_data):
         # Update the instance with validated data
         instance.first_name = validated_data.get('first_name', instance.first_name)
@@ -158,11 +175,11 @@ class GymOwnerCreatedMembershipSerializer(serializers.ModelSerializer):
         instance.start_date = validated_data.get('start_date', instance.start_date)
         instance.membership_type = validated_data.get('membership_type', instance.membership_type)
         
-        # Calculate new expiration date
-        instance.expiration_date = self.calculate_expiration_date(
-            instance.membership_type, instance.start_date
-        )
-
+        # Recalculate expiration date only if membership_type or start_date has changed
+        if 'membership_type' in validated_data or 'start_date' in validated_data:
+            instance.expiration_date = self.calculate_expiration_date(
+                instance.membership_type, instance.start_date
+            )
 
         # Save the updated instance
         instance.save()
@@ -170,7 +187,7 @@ class GymOwnerCreatedMembershipSerializer(serializers.ModelSerializer):
 
     def calculate_expiration_date(self, membership_type, start_date):
         membership_durations = {
-            'day': timedelta(days=0),
+            'day': timedelta(days=1),
             'weekly': timedelta(weeks=1),
             'monthly': timedelta(weeks=4),
             'quarterly': timedelta(weeks=12),
@@ -180,4 +197,4 @@ class GymOwnerCreatedMembershipSerializer(serializers.ModelSerializer):
         try:
             return start_date + membership_durations[membership_type]
         except KeyError:
-            raise ValueError("Invalid membership type")
+            raise ValidationError("Invalid membership type")
