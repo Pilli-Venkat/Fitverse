@@ -1,3 +1,7 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,33 +14,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap JS (Optional for better modal UI) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            width: 800px;
-            background-color: #f9f9f9;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .responseMessage {
-            margin-top: 10px;
-        }
-    </style>
+  
 </head>
 <body>
 
@@ -156,9 +134,21 @@
                                 $('#membershipType').val(response.membership_type);
                                 $('#gymSelect').val(response.gym);
 
-                                if (response.membership_status === "active") {
-                                    $('#responseMessage').append('<p>This membership is currently active.</p>');
-                                } else {
+                                const activeStatuses = ["active", "upcoming"];
+                                if (activeStatuses.includes(existingMembership.membership_status)) { 
+                                    $('#responseMessage').append(`
+                                        <p>This membership is currently ${existingMembership.membership_status} Plan.</p>
+                                        <p>Membership Details:</p>
+                                        <ul>
+                                            <li>First Name: ${existingMembership.first_name}</li>
+                                            <li>Last Name: ${existingMembership.last_name}</li>
+                                            <li>Address: ${existingMembership.address}</li>
+                                            <li>Start Date: ${existingMembership.start_date}</li>
+                                            <li>Membership Type: ${existingMembership.membership_type}</li>
+                                            
+                                        </ul>
+                                    `);
+                                }  else {
                                     $('#responseMessage').append('<p>This membership is not active. You can create a new membership.</p>');
                                 }
                             } else {
@@ -233,3 +223,4 @@
     </script>
 </body>
 </html>
+{% endblock %}

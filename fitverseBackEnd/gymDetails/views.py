@@ -288,11 +288,14 @@ class GymOwnerCreatedMembershipViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'], url_path='check_phone/(?P<phone_number>[^/.]+)')
     def check_phone(self, request, phone_number=None):
         gym_ids = GymInfo.objects.filter(owner=request.user).values_list('id', flat=True)
-        membership = GymOwnerCreatedMembership.objects.filter(
+        
+        # Fetch memberships sorted by start_date in descending order
+        memberships = GymOwnerCreatedMembership.objects.filter(
             phone_number=phone_number, gym__in=gym_ids
-        ).first()
+        ).order_by('-start_date')  # Order by start_date descending
 
-        if membership:
+        if memberships.exists():  # Check if any memberships exist
+            membership = memberships.first()  # Get the first membership
             serializer = self.get_serializer(membership)
             return Response({"exists": True, **serializer.data}, status=status.HTTP_200_OK)
         else:

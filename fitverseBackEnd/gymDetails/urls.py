@@ -29,11 +29,15 @@ urlpatterns = [
 
 
     # Frontend template views
+    
     path('', views.home_view, name='home'),
     path('login/', views.login_view, name='login'),
     path('signup/', views.signup_view, name='signup'),
     path('logout/', views.logout_view, name='logout'),
-    path('gymlist/<int:pk>/', views.gym_detail, name='gym_detail'),  # This URL pattern s
+
+
+
+    path('gymlist/<int:pk>/', views.gym_detail, name='gym_detail'),  
     path('addGymdetails/', views.add_gym_details, name='add_gym_details'),
     path('edit-gym/<int:gym_id>/', views.edit_gym_details, name='edit_gym_details'),
     path('membership-options/', views.customer_membership_options_view, name='membership-options'),
@@ -43,5 +47,5 @@ urlpatterns = [
     path('gym-owner/memberships/', views.gym_owner_memberships_page, name='gym_owner_memberships'),
     path('create-membership/', views.create_membership_view, name='create_membership'),
 
-    
+
 ]
