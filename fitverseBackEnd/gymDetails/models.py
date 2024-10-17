@@ -47,14 +47,22 @@ class Membership(models.Model):
         # Case 3: Plan has expired
         else:
             return "Plan has expired"
+        
 
 class GymOwnerCreatedMembership(models.Model):
     MEMBERSHIP_TYPE_CHOICES = [
         ('day', 'Day'),
         ('weekly', 'Weekly'),
+        ('half_month', 'Half-Month'),  # 15-day option
         ('monthly', 'Monthly'),
         ('quarterly', 'Quarterly'),
         ('annually', 'Annually'),
+    ]
+
+    TRAINING_OPTIONS_CHOICES = [
+        ('cardio', 'Cardio'),
+        ('strength', 'Strength Training'),
+    
     ]
 
     first_name = models.CharField(max_length=50)
@@ -65,10 +73,12 @@ class GymOwnerCreatedMembership(models.Model):
     start_date = models.DateField()
     expiration_date = models.DateField()
     membership_type = models.CharField(max_length=10, choices=MEMBERSHIP_TYPE_CHOICES)
-    #created_at = models.DateTimeField(auto_now_add=True)  # Automatically set on creation
+    membership_option = models.CharField(max_length=10, choices=TRAINING_OPTIONS_CHOICES)  # Cardio or Strength Training
+    created_at = models.DateTimeField(auto_now_add=True)  # Automatically set on creation
+    deleted = models.BooleanField(default=False)  # 1 for deleted, 0 for not deleted (soft delete)
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name} - {self.gym.gym_name} ({self.get_membership_type_display()})'
+        return f'{self.first_name} {self.last_name} - {self.gym.gym_name} ({self.get_membership_type_display()}) - {self.get_membership_option_display()}'
 
     @property
     def days_until_expiration(self):
@@ -86,7 +96,6 @@ class GymOwnerCreatedMembership(models.Model):
                 return f"Expired before {days_since_expiration} days"
             else:
                 return "Expired"
-
 
     @property
     def membership_status(self):

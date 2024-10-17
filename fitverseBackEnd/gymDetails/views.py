@@ -283,7 +283,7 @@ class GymOwnerCreatedMembershipViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         owner_gyms = GymInfo.objects.filter(owner=self.request.user)
-        return GymOwnerCreatedMembership.objects.filter(gym__in=owner_gyms)
+        return GymOwnerCreatedMembership.objects.filter(gym__in=owner_gyms,deleted=False)
 
     @action(detail=False, methods=['get'], url_path='check_phone/(?P<phone_number>[^/.]+)')
     def check_phone(self, request, phone_number=None):
@@ -307,15 +307,18 @@ class GymOwnerCreatedMembershipViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         # Get the membership instance to be deleted
         membership = self.get_object()
+        print(f"Attempting to delete membership: {membership.id}")
 
         # Check if the membership can be deleted
-        if membership.expiration_date >= timezone.now().date():
-            raise ValidationError("You cannot delete an active membership.")
+        if membership.membership_status in ['Upcoming', 'Active']:
+            raise ValidationError(f"You cannot delete an {membership.membership_status} membership.")
 
-        # Proceed to delete the membership
-        membership.delete()
+        # Proceed to soft delete the membership
+        membership.deleted = True  # Soft delete flag
+        membership.save()
+        print(f"Membership {membership.id} marked as deleted.")
+
         return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 
 # FRONT END VIEWS

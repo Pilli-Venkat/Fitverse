@@ -34,6 +34,7 @@
                     <th>Address</th>
                     <th>Start Date</th>
                     <th>Membership Type</th>
+                    <th>Membership Option</th>
                     <th>Days Until Expiration</th>
                     <th>Membership Status</th>
                     <th>Expiration Date</th>
@@ -80,9 +81,18 @@
                     <select class="form-select" id="editMembershipType" required>
                         <option value="day">Day</option>
                         <option value="weekly">Weekly</option>
+                        <option value="half_month">Half-Month</option>
                         <option value="monthly">Monthly</option>
                         <option value="quarterly">Quarterly</option>
                         <option value="annually">Annually</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="editMembershipOption" class="form-label">Membership Option</label>
+                    <select class="form-select" id="editMembershipOption" required>
+                        <option value="strength">Strength</option>
+                        <option value="cardio">Cardio</option>
+                    
                     </select>
                 </div>
                 <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -129,9 +139,18 @@
                     <select class="form-select" id="extendMembershipType" required>
                         <option value="day">Day</option>
                         <option value="weekly">Weekly</option>
+                        <option value="half_month">Half-Month</option>
                         <option value="monthly">Monthly</option>
                         <option value="quarterly">Quarterly</option>
                         <option value="annually">Annually</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="extendMembershipOption" class="form-label">Membership Option</label>
+                    <select class="form-select" id="extendMembershipOption" required>
+                        <option value="strength">Strength</option>
+                        <option value="cardio">Cardio</option>
+                    
                     </select>
                 </div>
                 <button type="submit" class="btn btn-success">Extend Membership</button>
@@ -184,6 +203,7 @@
                     { "data": "address" },
                     { "data": "start_date" },
                     { "data": "membership_type" },
+                    { "data": "membership_option" },
                     { "data": "days_until_expiration" },
                     { "data": "membership_status" },
                     { "data": "expiration_date" },
@@ -192,7 +212,7 @@
                         "render": function (data, type, row) {
                             return `
                                 <button class="btn btn-sm btn-primary editMembershipButton" data-id="${row.id}">Edit</button>
-                                <button class="btn btn-sm btn-danger deleteMembershipButton" data-id="${row.id}">Delete</button>
+                                <button class="btn btn-sm btn-danger deleteMembershipButton" data-id="${row.id}">Delete</button> 
                                 <button class="btn btn-sm btn-success extendMembershipButton" data-id="${row.id}">Extend</button>
                             `;
                         },
@@ -250,6 +270,7 @@
                         $('#editAddress').val(membership.address);
                         $('#editStartDate').val(membership.start_date);
                         $('#editMembershipType').val(membership.membership_type);
+                        $('#editMembershipOption').val(membership.membership_option);
                         $('#editGym').val(membership.gym);
 
                         // Show the modal
@@ -273,6 +294,7 @@
                     address: $('#editAddress').val(),
                     start_date: $('#editStartDate').val(),
                     membership_type: $('#editMembershipType').val(),
+                    membership_option: $('#editMembershipOption').val(),
                     gym: $('#editGym').val() // Include gym field
                 };
 
@@ -346,6 +368,7 @@
                     address: $('#extendAddress').val(),
                     start_date: $('#extendStartDate').val(),
                     membership_type: $('#extendMembershipType').val(),
+                    membership_option: $('#extendMembershipOption').val(),
                     gym: $('#extendGym').val()
                 };
 

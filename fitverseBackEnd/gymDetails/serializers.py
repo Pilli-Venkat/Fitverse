@@ -116,8 +116,8 @@ class GymOwnerCreatedMembershipSerializer(serializers.ModelSerializer):
         model = GymOwnerCreatedMembership
         fields = [
             'id', 'first_name', 'last_name', 'phone_number', 
-            'address', 'gym', 'start_date', 'membership_type', 
-            'days_until_expiration', 'membership_status', 'expiration_date'
+            'address', 'gym', 'start_date', 'membership_type','membership_option' ,
+            'days_until_expiration', 'membership_status', 'expiration_date','deleted'
         ]
 
     def __init__(self, *args, **kwargs):
@@ -174,7 +174,7 @@ class GymOwnerCreatedMembershipSerializer(serializers.ModelSerializer):
         instance.address = validated_data.get('address', instance.address)
         instance.start_date = validated_data.get('start_date', instance.start_date)
         instance.membership_type = validated_data.get('membership_type', instance.membership_type)
-        
+        instance.membership_option = validated_data.get('membership_option', instance.membership_option)
         # Recalculate expiration date only if membership_type or start_date has changed
         if 'membership_type' in validated_data or 'start_date' in validated_data:
             instance.expiration_date = self.calculate_expiration_date(
@@ -189,6 +189,7 @@ class GymOwnerCreatedMembershipSerializer(serializers.ModelSerializer):
         membership_durations = {
             'day': timedelta(days=1),
             'weekly': timedelta(weeks=1),
+            'half_month':  timedelta(days=15),
             'monthly': timedelta(weeks=4),
             'quarterly': timedelta(weeks=12),
             'annually': timedelta(weeks=52),
