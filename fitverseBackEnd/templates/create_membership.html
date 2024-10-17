@@ -55,6 +55,13 @@
         </select>
     </div>
     <div class="mb-3">
+        <select id="membershipOption" class="form-control">
+            <option value="" disabled selected>Select Membership Option</option>
+            <option value="strength">Strength</option>
+            <option value="cardio">Cardio</option>
+        </select>
+    </div>
+    <div class="mb-3">
         <select id="gymSelect" class="form-control">
             <option value="" disabled selected>Select Gym</option>
             <!-- Gym options will be populated here -->
@@ -133,6 +140,7 @@
                                 $('#address').val(response.address);
                                 $('#startDate').val(response.start_date);
                                 $('#membershipType').val(response.membership_type);
+                                $('#membershipOption').val(response.membership_option);
                                 $('#gymSelect').val(response.gym);
 
                                 const activeStatuses = ["active", "upcoming"];
@@ -174,9 +182,10 @@
                 let address = $('#address').val().trim();
                 let startDate = $('#startDate').val();
                 let membershipType = $('#membershipType').val();
+                let membershipOption = $('#membershipOption').val();
                 let gymId = $('#gymSelect').val();
 
-                if (firstName && lastName && phoneNumber && address && startDate && membershipType && gymId) {
+                if (firstName && lastName && phoneNumber && address && startDate && membershipType && gymId && membershipOption) {
                     $.ajax({
                         url: "/api/ownerCreatedmemberships/",
                         method: "POST",
@@ -192,6 +201,7 @@
                             "address": address,
                             "start_date": startDate,
                             "membership_type": membershipType,
+                            "membership_option": membershipOption,
                             "gym": gymId  
                         }),
                         success: function() {
@@ -199,6 +209,7 @@
                             // Clear input fields
                             $('#firstName, #lastName, #phoneNumber, #address, #startDate').val('');
                             $('#membershipType').val(''); // Reset membership type
+                            $('#membershipOption').val(''); // Reset membership type
                             $('#gymSelect').val(''); // Reset gym selection
                             loadGyms(); // Reload gyms in case of any changes
                             existingMembership = null;

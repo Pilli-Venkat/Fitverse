@@ -125,12 +125,7 @@ class GymOwnerCreatedMembershipSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if request and hasattr(request, 'user'):
             self.fields['gym'].queryset = GymInfo.objects.filter(owner=request.user)
-    '''
-    def get_days_until_expiration(self, obj):
-        today = timezone.now().date()
-        delta = obj.expiration_date - today
-        return delta.days if delta.days >= 0 else 0
-    '''
+   
     def get_membership_status(self, obj):
         today = timezone.now().date()
         if obj.start_date <= today <= obj.expiration_date:
@@ -153,13 +148,15 @@ class GymOwnerCreatedMembershipSerializer(serializers.ModelSerializer):
         )
 
         today = timezone.now().date()
+         # Filter existing memberships that are either active or upcoming
         active_or_upcoming = existing_membership.filter(
-            start_date__lte=today, 
+            start_date__lte=today,
             expiration_date__gte=today
+        ).exists() or existing_membership.filter(
+            start_date__gt=today
         ).exists()
-
         if active_or_upcoming:
-            raise ValidationError({"phone_number": "A membership with this phone number is already active."})
+            raise ValidationError({"phone_number": f"A membership with this phone number is Active/ Upcoming Plan."})
 
         validated_data['expiration_date'] = self.calculate_expiration_date(
             validated_data['membership_type'], validated_data['start_date']

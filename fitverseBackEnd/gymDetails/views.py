@@ -1,4 +1,70 @@
 # gymDetails/views.py
+from rest_framework import viewsets, status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes, action
+from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
+from django.shortcuts import render, get_object_or_404, redirect
+from django.utils import timezone
+from django.contrib.auth.decorators import login_required
+from .models import GymInfo, CustomUser, Membership, GymOwnerCreatedMembership
+from .serializers import GymInfoSerializer, CreateGymInfoSerializer, CreateUserSerializer, GymOwnerCreatedMembershipSerializer
+from datetime import timedelta
+from rest_framework import viewsets, status
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
+from .models import Membership, GymInfo
+from .serializers import GymOwnerCreatedMembershipSerializer
+from datetime import timedelta
+from django.utils import timezone
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+from .models import GymInfo, GymOwnerCreatedMembership
+from .serializers import GymOwnerCreatedMembershipSerializer
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from .models import GymInfo, GymOwnerCreatedMembership
+from .serializers import GymOwnerCreatedMembershipSerializer
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.exceptions import ValidationError
+from .models import GymOwnerCreatedMembership
+
+
+from rest_framework import viewsets, status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from django.utils import timezone
+from .models import GymOwnerCreatedMembership, GymInfo  # Adjust the import based on your project structure
+from .serializers import GymOwnerCreatedMembershipSerializer
+from rest_framework.exceptions import ValidationError
+from rest_framework import viewsets, status
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from .models import GymOwnerCreatedMembership, GymInfo
+from .serializers import GymOwnerCreatedMembershipSerializer
+from rest_framework.permissions import IsAuthenticated
+from django.utils import timezone
+from rest_framework.exceptions import ValidationError
+# views.py
+
+from rest_framework import viewsets, status
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from .models import GymOwnerCreatedMembership, GymInfo
+from .serializers import GymOwnerCreatedMembershipSerializer, GymInfoSerializer
+from rest_framework.permissions import IsAuthenticated
+from django.utils import timezone
+from rest_framework.exceptions import ValidationError
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from .models import GymInfo, CustomUser,Membership,GymOwnerCreatedMembership
@@ -14,6 +80,17 @@ from . import serializers
 from django.shortcuts import render, get_object_or_404,redirect
 from django.contrib.auth.decorators import login_required
 
+
+from rest_framework import viewsets, status
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
+from .models import Membership, GymInfo, GymOwnerCreatedMembership
+from .serializers import GymOwnerCreatedMembershipSerializer, GymInfoSerializer
+from datetime import timedelta
 
 
 class GymInfoViewSet(viewsets.ModelViewSet):
@@ -219,63 +296,6 @@ class gymOwnerMemberShipViewset(viewsets.ModelViewSet):
 
 
 
-
-
-from rest_framework import viewsets, status
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from django.shortcuts import get_object_or_404
-from .models import Membership, GymInfo
-from .serializers import GymOwnerCreatedMembershipSerializer
-from datetime import timedelta
-from django.utils import timezone
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
-from .models import GymInfo, GymOwnerCreatedMembership
-from .serializers import GymOwnerCreatedMembershipSerializer
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from .models import GymInfo, GymOwnerCreatedMembership
-from .serializers import GymOwnerCreatedMembershipSerializer
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.exceptions import ValidationError
-from .models import GymOwnerCreatedMembership
-
-
-from rest_framework import viewsets, status
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from django.utils import timezone
-from .models import GymOwnerCreatedMembership, GymInfo  # Adjust the import based on your project structure
-from .serializers import GymOwnerCreatedMembershipSerializer
-from rest_framework.exceptions import ValidationError
-from rest_framework import viewsets, status
-from rest_framework.response import Response
-from rest_framework.decorators import action
-from .models import GymOwnerCreatedMembership, GymInfo
-from .serializers import GymOwnerCreatedMembershipSerializer
-from rest_framework.permissions import IsAuthenticated
-from django.utils import timezone
-from rest_framework.exceptions import ValidationError
-# views.py
-
-from rest_framework import viewsets, status
-from rest_framework.response import Response
-from rest_framework.decorators import action
-from .models import GymOwnerCreatedMembership, GymInfo
-from .serializers import GymOwnerCreatedMembershipSerializer, GymInfoSerializer
-from rest_framework.permissions import IsAuthenticated
-from django.utils import timezone
-from rest_framework.exceptions import ValidationError
 
 class GymOwnerCreatedMembershipViewSet(viewsets.ModelViewSet):
     serializer_class = GymOwnerCreatedMembershipSerializer
