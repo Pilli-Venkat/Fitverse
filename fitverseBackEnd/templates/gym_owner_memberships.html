@@ -210,11 +210,19 @@
                     {
                         "data": null,
                         "render": function (data, type, row) {
-                            return `
-                                <button class="btn btn-sm btn-primary editMembershipButton" data-id="${row.id}">Edit</button>
-                                <button class="btn btn-sm btn-danger deleteMembershipButton" data-id="${row.id}">Delete</button> 
+                            let buttons = `
+                            <button class="btn btn-sm btn-primary editMembershipButton" data-id="${row.id}">Edit</button>
+                            <button class="btn btn-sm btn-danger deleteMembershipButton" data-id="${row.id}">Delete</button>
+                        `;
+
+                        // Conditionally add the "Extend" button if the membership_status is 'Expired'
+                        if (row.membership_status === 'expired') {
+                            buttons += `
                                 <button class="btn btn-sm btn-success extendMembershipButton" data-id="${row.id}">Extend</button>
                             `;
+                        }
+
+                        return buttons;
                         },
                         "orderable": false
                     }
