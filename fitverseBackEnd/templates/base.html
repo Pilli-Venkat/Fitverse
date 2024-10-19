@@ -6,96 +6,89 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}My Anime Fitness Website{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         /* General Styles */
         body {
-            font-family: 'Comic Sans MS', cursive, sans-serif; /* Anime-style font */
-            margin: 0;
-            padding: 0;
-            background-image: url('#'); /* Example background image */
-            background-size: cover;
-            background-position: center;
-            color: #ffffff; /* White text for better contrast */
+            font-family: 'Arial', sans-serif;
+            background-color: #141414; /* Dark background */
+            color: #ffffff; /* Light text */
+            transition: background-color 0.3s, color 0.3s;
         }
-        
+        .navbar {
+            background-color: #e50914; /* Netflix red */
+        }
+        .navbar-brand, .nav-link {
+            color: #ffffff !important; /* White text for navbar */
+        }
+        .nav-link:hover {
+            text-decoration: underline; /* Underline on hover */
+        }
         .container {
             max-width: 1200px;
             margin: 20px auto;
             padding: 20px;
-            background-color: rgba(255, 255, 255, 0.9); /* Adjusted for better readability */
             border-radius: 12px;
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
-            color: #000000; /* Set text color to black for better readability inside the container */
+            background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black */
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
         }
 
         /* Button Styles */
-        .button {
-            display: inline-block;
-            padding: 10px 20px;
-            margin: 5px 0;
-            font-size: 16px;
-            cursor: pointer;
-            text-decoration: none;
-            color: #fff;
-            background-color: #ff5722; /* Bright orange color */
+        .btn-primary {
+            background-color: #e50914; /* Netflix red */
             border: none;
-            border-radius: 8px;
-            transition: background-color 0.3s, transform 0.3s;
         }
-
-        .button:hover {
-            background-color: #e64a19; /* Darker orange on hover */
-            transform: scale(1.05); /* Slightly enlarge button on hover */
+        .btn-primary:hover {
+            background-color: #f6121b; /* Darker red on hover */
         }
 
         /* Additional styles for forms */
         form div {
             margin-bottom: 15px;
         }
-
         form label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold; /* Bold labels */
         }
-
         form input, form textarea {
             width: 100%;
             padding: 10px;
-            border: 2px solid #ff5722; /* Orange border */
+            border: 2px solid #e50914; /* Red border */
             border-radius: 5px;
-            box-sizing: border-box;
+            background-color: #333333; /* Dark input fields */
+            color: #ffffff; /* White text in inputs */
+        }
+        form input:focus, form textarea:focus {
+            border-color: #f6121b; /* Lighter red on focus */
+            outline: none; /* Remove outline */
         }
 
-        form button {
-            background-color: #4CAF50; /* Green button */
-        }
-
-        form button:hover {
-            background-color: #388E3C; /* Darker green on hover */
-        }
-
+        /* Gym items */
         .gym-item {
             margin-bottom: 20px;
             padding: 10px;
-            border: 1px solid #ff5722; /* Orange border for gym items */
+            border: 1px solid #e50914; /* Red border for gym items */
             border-radius: 8px;
-            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white for gym items */
-        }
-
-        .gym-item button {
-            margin-right: 10px;
+            background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent white */
         }
     </style>
 </head>
 <body>
     <!-- Include the navbar -->
     {% include 'navbar.html' %}
-    
+
     <div class="container">
+        <button id="theme-toggle" class="btn btn-secondary mb-3">Toggle Dark/Light Mode</button>
         {% block content %}
         <!-- Content will be injected here from child templates -->
         {% endblock %}
     </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
