@@ -80,12 +80,14 @@
     {% include 'navbar.html' %}
 
     <div class="container">
-        <button id="theme-toggle" class="btn btn-secondary mb-3">Toggle Dark/Light Mode</button>
+      
         {% block content %}
         <!-- Content will be injected here from child templates -->
         {% endblock %}
     </div>
 
-   
+    <!-- Bootstrap JS and dependencies -->
+    
+  
 </body>
 </html>

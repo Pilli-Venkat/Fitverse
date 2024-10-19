@@ -36,7 +36,8 @@
                     </li>
                 </ul>
             </div>
+            <!-- Dark/Light Mode Toggle Button -->
+            <button id="theme-toggle" class="btn btn-secondary ml-3">Toggle Dark/Light Mode</button>
         </div>
     </div>
 </nav>
-
