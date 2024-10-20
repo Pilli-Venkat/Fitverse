@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}My Anime Fitness Website{% endblock %}</title>
+    <title>{% block title %}FITVerse{% endblock %}</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
@@ -72,6 +72,51 @@
             border: 1px solid #e50914; /* Red border for gym items */
             border-radius: 8px;
             background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent white */
+        }
+        /* General styling for the navbar and brand */
+        .navbar-brand {
+            position: relative;
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 24px;
+            color: #000;
+            text-decoration: none;
+            font-weight: bold;
+            z-index: 1;
+        }
+
+        /* Container with the animated effect */
+        .navbar-brand::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid #ff6f61; /* Line color */
+            border-radius: 10px; /* Slight round corners */
+            box-sizing: border-box;
+            z-index: -1;
+            animation: moveBorder 3s linear infinite;
+        }
+
+        /* Keyframe animation for the border moving around the brand */
+        @keyframes moveBorder {
+            0% {
+                clip-path: inset(0 100% 100% 0); /* Start from top-left */
+            }
+            25% {
+                clip-path: inset(0 0 100% 0); /* Top border */
+            }
+            50% {
+                clip-path: inset(0 0 0 0); /* Full border */
+            }
+            75% {
+                clip-path: inset(0 0 0 100%); /* Right and bottom */
+            }
+            100% {
+                clip-path: inset(100% 0 0 0); /* Back to top-left */
+            }
         }
     </style>
 </head>
