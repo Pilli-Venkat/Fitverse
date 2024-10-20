@@ -9,14 +9,14 @@ router.register(r'gyminfo', views.GymInfoViewSet, basename='gyminfo')   # (Gym O
 
 router.register(r'createUser', views.CreateUserViewSet)
 router.register(r'gymlist', views.GymDetailsforCustomerViewSet, basename='gymlist') # To list the total gyms added
-router.register(r'gyms', views.createGymInfoViewSet, basename='gyms')
+router.register(r'gyms', views.CreateGymInfoViewSet, basename='gyms')
 
 
 router.register(r'memberships', views.MembershipViewSet,basename = 'memberships')
 
 
-router.register(r'customerMemberships', views.customerMembershipViewset,basename = 'customerMemberships')
-router.register(r'gymOwnerMemberships', views.gymOwnerMemberShipViewset,basename = 'gymOwnerMemberships')
+router.register(r'customerMemberships', views.CustomerMembershipViewset,basename = 'customerMemberships')
+router.register(r'gymOwnerMemberships', views.GymOwnerMembershipViewset,basename = 'gymOwnerMemberships')
 
 
 router.register(r'ownerCreatedmemberships', views.GymOwnerCreatedMembershipViewSet,basename = 'gymOwnerCreatedMemberships') #Main One

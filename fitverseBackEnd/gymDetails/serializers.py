@@ -1,6 +1,9 @@
 from rest_framework import serializers
-from .models import GymInfo, CustomUser,GymOwnerCreatedMembership
-from rest_framework.exceptions import ValidationError  
+from .models import GymInfo, CustomUser, Membership, GymOwnerCreatedMembership
+from rest_framework.exceptions import ValidationError
+from django.utils import timezone
+from datetime import timedelta
+
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
@@ -9,9 +12,10 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class GymInfoSerializer(serializers.ModelSerializer):
     owner = CustomUserSerializer()
     url = serializers.HyperlinkedIdentityField(view_name='gymlist-detail')
+    
     class Meta:
         model = GymInfo
-        fields = ['id', 'gym_name', 'description', 'city', 'owner','url']
+        fields = ['id', 'gym_name', 'description', 'city', 'owner', 'url']
 
 class CreateGymInfoSerializer(serializers.ModelSerializer):
     owner = serializers.PrimaryKeyRelatedField(read_only=True)  # Set as read-only
@@ -30,14 +34,11 @@ class CreateGymInfoSerializer(serializers.ModelSerializer):
         
         validated_data['owner'] = user  # Set the owner to the current user
         return super().create(validated_data)
-    
-
-# To create or register User
 
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'user_type','phone_number', 'email', 'first_name', 'last_name','password']  # Add any other fields you want to include
+        fields = ['id', 'user_type', 'phone_number', 'email', 'first_name', 'last_name', 'password']  # Add any other fields you want to include
     
     def create(self, validated_data):
         user = CustomUser(**validated_data)
@@ -45,66 +46,21 @@ class CreateUserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-
-from rest_framework import serializers
-from .models import Membership
-
-class customerMembershipSerializer(serializers.ModelSerializer):
+class CustomerMembershipSerializer(serializers.ModelSerializer):
     days_until_expiration = serializers.ReadOnlyField() 
     gym = GymInfoSerializer()
+
     class Meta:
         model = Membership
-        fields = ['id', 'user', 'gym', 'start_date', 'expiration_date', 'membership_type','days_until_expiration']
+        fields = ['id', 'user', 'gym', 'start_date', 'expiration_date', 'membership_type', 'days_until_expiration']
 
-class gymOwnerMembershipSerializer(serializers.ModelSerializer):
+class GymOwnerMembershipSerializer(serializers.ModelSerializer):
     days_until_expiration = serializers.ReadOnlyField() 
     user = CustomUserSerializer()
+
     class Meta:
         model = Membership
-        fields = ['id', 'user', 'gym', 'start_date', 'expiration_date', 'membership_type','days_until_expiration']
-from rest_framework import serializers
-from .models import GymOwnerCreatedMembership, GymInfo
-from django.utils import timezone
-from datetime import timedelta
-
-from django.utils import timezone
-from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
-from .models import GymOwnerCreatedMembership, GymInfo  # Adjust import based on your project structure
-
-from django.utils import timezone
-from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
-from .models import GymOwnerCreatedMembership, GymInfo  # Adjust import based on your project structure
-from datetime import timedelta
-
-from django.utils import timezone
-from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
-from .models import GymOwnerCreatedMembership, GymInfo  # Adjust import based on your project structure
-from datetime import timedelta
-from django.utils import timezone
-from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
-from .models import GymOwnerCreatedMembership, GymInfo  # Adjust import based on your project structure
-from datetime import timedelta
-from rest_framework import serializers
-from django.utils import timezone
-from django.core.exceptions import ValidationError
-from datetime import timedelta
-from .models import GymOwnerCreatedMembership, GymInfo  # Adjust the import based on your project structure
-from rest_framework import serializers
-from django.utils import timezone
-from datetime import timedelta
-from rest_framework.exceptions import ValidationError
-from .models import GymOwnerCreatedMembership, GymInfo
-# serializers.py
-
-from rest_framework import serializers
-from django.utils import timezone
-from datetime import timedelta
-from rest_framework.exceptions import ValidationError
-from .models import GymOwnerCreatedMembership, GymInfo
+        fields = ['id', 'user', 'gym', 'start_date', 'expiration_date', 'membership_type', 'days_until_expiration']
 
 class GymOwnerCreatedMembershipSerializer(serializers.ModelSerializer):
     days_until_expiration = serializers.ReadOnlyField()
@@ -116,8 +72,9 @@ class GymOwnerCreatedMembershipSerializer(serializers.ModelSerializer):
         model = GymOwnerCreatedMembership
         fields = [
             'id', 'first_name', 'last_name', 'phone_number', 
-            'address', 'gym', 'start_date', 'membership_type','membership_option' ,
-            'days_until_expiration', 'membership_status', 'expiration_date','deleted'
+            'address', 'gym', 'start_date', 'membership_type', 
+            'membership_option', 'days_until_expiration', 
+            'membership_status', 'expiration_date', 'deleted'
         ]
 
     def __init__(self, *args, **kwargs):
@@ -148,7 +105,7 @@ class GymOwnerCreatedMembershipSerializer(serializers.ModelSerializer):
         )
 
         today = timezone.now().date()
-         # Filter existing memberships that are either active or upcoming
+        # Filter existing memberships that are either active or upcoming
         active_or_upcoming = existing_membership.filter(
             start_date__lte=today,
             expiration_date__gte=today
@@ -186,7 +143,7 @@ class GymOwnerCreatedMembershipSerializer(serializers.ModelSerializer):
         membership_durations = {
             'day': timedelta(days=1),
             'weekly': timedelta(weeks=1),
-            'half_month':  timedelta(days=15),
+            'half_month': timedelta(days=15),
             'monthly': timedelta(weeks=4),
             'quarterly': timedelta(weeks=12),
             'annually': timedelta(weeks=52),

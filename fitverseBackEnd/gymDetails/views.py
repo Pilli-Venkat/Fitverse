@@ -1,125 +1,46 @@
 # gymDetails/views.py
-from rest_framework import viewsets, status
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import api_view, permission_classes, action
-from rest_framework.response import Response
-from rest_framework.exceptions import ValidationError
+
+# ==========================
+# BACKEND IMPORTS
+# ==========================
 from django.shortcuts import render, get_object_or_404, redirect
-from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+from rest_framework import viewsets, status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
 from .models import GymInfo, CustomUser, Membership, GymOwnerCreatedMembership
-from .serializers import GymInfoSerializer, CreateGymInfoSerializer, CreateUserSerializer, GymOwnerCreatedMembershipSerializer
-from datetime import timedelta
-from rest_framework import viewsets, status
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from django.shortcuts import get_object_or_404
-from .models import Membership, GymInfo
-from .serializers import GymOwnerCreatedMembershipSerializer
-from datetime import timedelta
-from django.utils import timezone
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
-from .models import GymInfo, GymOwnerCreatedMembership
-from .serializers import GymOwnerCreatedMembershipSerializer
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from .models import GymInfo, GymOwnerCreatedMembership
-from .serializers import GymOwnerCreatedMembershipSerializer
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.exceptions import ValidationError
-from .models import GymOwnerCreatedMembership
+from .serializers import (GymInfoSerializer, CreateGymInfoSerializer,
+                          CreateUserSerializer, GymOwnerCreatedMembershipSerializer,CustomerMembershipSerializer,GymOwnerMembershipSerializer)
 
-
-from rest_framework import viewsets, status
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from django.utils import timezone
-from .models import GymOwnerCreatedMembership, GymInfo  # Adjust the import based on your project structure
-from .serializers import GymOwnerCreatedMembershipSerializer
-from rest_framework.exceptions import ValidationError
-from rest_framework import viewsets, status
-from rest_framework.response import Response
-from rest_framework.decorators import action
-from .models import GymOwnerCreatedMembership, GymInfo
-from .serializers import GymOwnerCreatedMembershipSerializer
-from rest_framework.permissions import IsAuthenticated
-from django.utils import timezone
-from rest_framework.exceptions import ValidationError
-# views.py
-
-from rest_framework import viewsets, status
-from rest_framework.response import Response
-from rest_framework.decorators import action
-from .models import GymOwnerCreatedMembership, GymInfo
-from .serializers import GymOwnerCreatedMembershipSerializer, GymInfoSerializer
-from rest_framework.permissions import IsAuthenticated
-from django.utils import timezone
-from rest_framework.exceptions import ValidationError
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
-from .models import GymInfo, CustomUser,Membership,GymOwnerCreatedMembership
-from .serializers import GymInfoSerializer, CreateGymInfoSerializer, CreateUserSerializer,GymOwnerCreatedMembershipSerializer
-from rest_framework import decorators
-from rest_framework.decorators import api_view,permission_classes
-from rest_framework.response import Response
-from django.contrib.auth.models import User
-from rest_framework import status
-
-from . import serializers
-
-from django.shortcuts import render, get_object_or_404,redirect
-from django.contrib.auth.decorators import login_required
-
-
-from rest_framework import viewsets, status
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
-from django.shortcuts import get_object_or_404
-from django.utils import timezone
-from .models import Membership, GymInfo, GymOwnerCreatedMembership
-from .serializers import GymOwnerCreatedMembershipSerializer, GymInfoSerializer
-from datetime import timedelta
-
-
+# ==========================
+# BACKEND VIEWS
+# ==========================
 class GymInfoViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
 
-    permission_classes = [IsAuthenticated]  # Require authentication
     def get_queryset(self):
-        # Access request.user in this method
         return GymInfo.objects.filter(owner=self.request.user)
 
     def get_serializer_class(self):
         if self.request.method in ['POST', 'PUT', 'PATCH']:
-            return CreateGymInfoSerializer  # Use CreateGymInfoSerializer for POST, PUT, PATCH
-        return GymInfoSerializer  # Use GymInfoSerializer for other methods
-    
+            return CreateGymInfoSerializer
+        return GymInfoSerializer
 
-class createGymInfoViewSet(viewsets.ModelViewSet):
 
-    permission_classes = [IsAuthenticated]  # Require authentication
+class CreateGymInfoViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
     serializer_class = CreateGymInfoSerializer
+
     def get_queryset(self):
-        # Access request.user in this method
         return GymInfo.objects.filter(owner=self.request.user)
-    
 
 
 class CreateUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CreateUserSerializer
-    #permission_classes = [AllowAny]  # Allow public access or set to IsAuthenticated as needed
 
     def list(self, request, *args, **kwargs):
         return Response({"detail": "Method 'GET' not allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -137,96 +58,75 @@ class CreateUserViewSet(viewsets.ModelViewSet):
         return Response({"detail": "Method 'DELETE' not allowed."}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def create(self, request, *args, **kwargs):
-        return super().create(request, *args, **kwargs)  # Allow only POST for create
-    
+        return super().create(request, *args, **kwargs)
+
 
 @api_view(['GET'])
 def userDetails(request):
-    # Check if the user is authenticated
     if request.user.is_authenticated:
-        # You can choose what user information to return
         user_data = {
-           
             'phone_number': request.user.phone_number,
             'email': request.user.email,
-            'name':request.user.first_name + ' ' +request.user.last_name,
+            'name': f"{request.user.first_name} {request.user.last_name}",
             'account_type': request.user.user_type
-            # Add any other fields you want to include
         }
-        return Response(user_data)  # Use Response instead of JsonResponse
-    else:
-        return Response({'error': 'User not authenticated'}, status=401)
-
+        return Response(user_data)
+    return Response({'error': 'User not authenticated'}, status=401)
 
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def updateUserDetails(request):
-    # Check if the user is authenticated
     if request.user.is_authenticated:
         user = request.user
-        
-        # Update user fields with provided data
         phone_number = request.data.get('phone_number')
         email = request.data.get('email')
         first_name = request.data.get('first_name')
         last_name = request.data.get('last_name')
 
-        # Validate phone number uniqueness if provided
+        if phone_number and CustomUser.objects.filter(phone_number=phone_number).exclude(id=user.id).exists():
+            return Response({'error': 'This phone number is already associated with another account.'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
         if phone_number:
-            # Check if the phone number already exists for another user
-            if CustomUser.objects.filter(phone_number=phone_number).exclude(id=user.id).exists():
-                return Response({'error': 'This phone number is already associated with another account.'}, 
-                                status=status.HTTP_400_BAD_REQUEST)
-
             user.phone_number = phone_number
+        if email and CustomUser.objects.filter(email=email).exclude(id=user.id).exists():
+            return Response({'error': 'This email is already associated with another account.'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
-        # Optionally validate email uniqueness if needed
         if email:
-            # Check if the email already exists for another user
-            if CustomUser.objects.filter(email=email).exclude(id=user.id).exists():
-                return Response({'error': 'This email is already associated with another account.'}, 
-                                status=status.HTTP_400_BAD_REQUEST)
-
             user.email = email
-        
-        # Update other fields if provided
         if first_name:
             user.first_name = first_name
         if last_name:
             user.last_name = last_name
-        
-        # Save the user instance
+
         user.save()
 
-        # Prepare the response data
         updated_user_data = {
             'phone_number': user.phone_number,
             'email': user.email,
             'name': f"{user.first_name} {user.last_name}"
         }
-        
+
         return Response(updated_user_data, status=status.HTTP_200_OK)
-    
+
     return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-
 class GymDetailsforCustomerViewSet(viewsets.ReadOnlyModelViewSet):
-    # permission_classes = [IsAuthenticated]  # Uncomment if you want authentication
-
     queryset = GymInfo.objects.all()
     serializer_class = GymInfoSerializer
 
+
 class MembershipViewSet(viewsets.ModelViewSet):
-    serializer_class = serializers.customerMembershipSerializer
+    serializer_class =CustomerMembershipSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
         gym_id = self.request.query_params.get('gym_id')
 
-        # Return memberships for the authenticated user and specific gym if gym_id is provided
         if gym_id:
             return Membership.objects.filter(user=user, gym__id=gym_id)
         return Membership.objects.filter(user=user)
@@ -235,17 +135,12 @@ class MembershipViewSet(viewsets.ModelViewSet):
         gym_id = request.data.get('gym_id')
         membership_type = request.data.get('membership_type')
 
-        # Ensure the gym exists
         gym = get_object_or_404(GymInfo, id=gym_id)
 
-        # Check if the user already has a membership for this gym
-        existing_membership = Membership.objects.filter(user=request.user, gym=gym).first()
-        if existing_membership:
-            return Response({
-                "detail": "You already have a membership for this gym."
-            }, status=status.HTTP_400_BAD_REQUEST)
+        if Membership.objects.filter(user=request.user, gym=gym).exists():
+            return Response({"detail": "You already have a membership for this gym."},
+                            status=status.HTTP_400_BAD_REQUEST)
 
-        # Create the membership instance
         membership = Membership.objects.create(
             user=request.user,
             gym=gym,
@@ -258,43 +153,36 @@ class MembershipViewSet(viewsets.ModelViewSet):
 
     def calculate_expiration_date(self, membership_type):
         from datetime import timedelta, date
-        
-        if membership_type == 'day':
-            return date.today() + timedelta(days=1)
-        elif membership_type == 'weekly':
-            return date.today() + timedelta(weeks=1)
-        elif membership_type == 'monthly':
-            return date.today() + timedelta(days=30)
-        elif membership_type == 'quarterly':
-            return date.today() + timedelta(days=90)
-        elif membership_type == 'annually':
-            return date.today() + timedelta(days=365)
-        else:
+
+        expiration_map = {
+            'day': timedelta(days=1),
+            'weekly': timedelta(weeks=1),
+            'monthly': timedelta(days=30),
+            'quarterly': timedelta(days=90),
+            'annually': timedelta(days=365),
+        }
+
+        if membership_type not in expiration_map:
             raise ValueError('Invalid membership type')
+        
+        return date.today() + expiration_map[membership_type]
 
 
-class customerMembershipViewset(viewsets.ModelViewSet):
-
-    serializer_class = serializers.customerMembershipSerializer
-    permission_classes= [IsAuthenticated]
+class CustomerMembershipViewset(viewsets.ModelViewSet):
+    serializer_class =CustomerMembershipSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        # Access request.user in this method
         return Membership.objects.filter(user=self.request.user)
 
 
-class gymOwnerMemberShipViewset(viewsets.ModelViewSet):
-
-    serializer_class = serializers.gymOwnerMembershipSerializer
-    permission_classes= [IsAuthenticated]
+class GymOwnerMembershipViewset(viewsets.ModelViewSet):
+    serializer_class = GymOwnerMembershipSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        # Get all gyms owned by the logged-in gym owner (request.user)
         owner_gyms = GymInfo.objects.filter(owner=self.request.user)
-        # Return all memberships associated with those gyms
         return Membership.objects.filter(gym__in=owner_gyms)
-
-
 
 
 class GymOwnerCreatedMembershipViewSet(viewsets.ModelViewSet):
@@ -303,57 +191,42 @@ class GymOwnerCreatedMembershipViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         owner_gyms = GymInfo.objects.filter(owner=self.request.user)
-        return GymOwnerCreatedMembership.objects.filter(gym__in=owner_gyms,deleted=False)
+        return GymOwnerCreatedMembership.objects.filter(gym__in=owner_gyms, deleted=False)
 
     @action(detail=False, methods=['get'], url_path='check_phone/(?P<phone_number>[^/.]+)')
     def check_phone(self, request, phone_number=None):
         gym_ids = GymInfo.objects.filter(owner=request.user).values_list('id', flat=True)
-        
-        # Fetch memberships sorted by start_date in descending order
-        memberships = GymOwnerCreatedMembership.objects.filter(
-            phone_number=phone_number, gym__in=gym_ids
-        ).order_by('-start_date')  # Order by start_date descending
+        memberships = GymOwnerCreatedMembership.objects.filter(phone_number=phone_number, gym__in=gym_ids).order_by('-start_date')
 
-        if memberships.exists():  # Check if any memberships exist
-            membership = memberships.first()  # Get the first membership
+        if memberships.exists():
+            membership = memberships.first()
             serializer = self.get_serializer(membership)
             return Response({"exists": True, **serializer.data}, status=status.HTTP_200_OK)
-        else:
-            return Response({"exists": False}, status=status.HTTP_200_OK)
-
-    def partial_update(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+        return Response({"exists": False}, status=status.HTTP_200_OK)
 
     def destroy(self, request, *args, **kwargs):
-        # Get the membership instance to be deleted
         membership = self.get_object()
-        print(f"Attempting to delete membership: {membership.id}")
-
-        # Check if the membership can be deleted
         if membership.membership_status in ['Upcoming', 'Active']:
             raise ValidationError(f"You cannot delete an {membership.membership_status} membership.")
 
-        # Proceed to soft delete the membership
-        membership.deleted = True  # Soft delete flag
+        membership.deleted = True
         membership.save()
-        print(f"Membership {membership.id} marked as deleted.")
-
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# FRONT END VIEWS
+# ==========================
+# FRONTEND IMPORTS
+# ==========================
+import requests
 
-    # views.py
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-
-# Home page view
+# ==========================
+# FRONTEND VIEWS
+# ==========================
 def home_view(request):
     return render(request, 'home.html')
 
-# Login view
+
 def login_view(request):
-    print("LOGIN VIEW CALLED")
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -361,24 +234,16 @@ def login_view(request):
         if user is not None:
             login(request, user)
             return redirect('home')
-        else:
-            return render(request, 'login.html', {'error': 'Invalid username or password'})
+        return render(request, 'login.html', {'error': 'Invalid username or password'})
     return render(request, 'login.html')
-
-import requests
-from django.shortcuts import render, redirect
-# Signup view
-# gymDetails/views.py
-import requests
-from django.shortcuts import render, redirect
 
 
 def signup_view(request):
     if request.method == 'POST':
-        # Render the template if the method is POST, but we'll handle API calls in the frontend
-        return render(request, 'signup.html') 
+        return render(request, 'signup.html')  # Handle API calls in the frontend
+    return render(request, 'signup.html')
 
-    return render(request, 'signup.html')  # Render signup page for GET request
+
 def logout_view(request):
     logout(request)
     return redirect('login')
@@ -387,14 +252,10 @@ def logout_view(request):
 @login_required
 def gym_detail(request, pk):
     return render(request, 'gym_detail.html', {'gym_id': pk})
-# Need to fix this part
-
-
 
 
 @login_required
 def edit_gym_details(request, gym_id):
-    # The actual editing is handled via API; this view renders the edit page
     gym = get_object_or_404(GymInfo, id=gym_id, owner=request.user)
     context = {
         'gym_id': gym.id,
@@ -404,18 +265,13 @@ def edit_gym_details(request, gym_id):
 
 @login_required
 def customer_membership_options_view(request):
-    # Ensure the user is authenticated
-    if not request.user.is_authenticated:
-        return redirect('login')  # Redirect to login if not authenticated
-
-    # Optionally, you can pass any context you need to the template
     return render(request, 'membership_options.html')
+
 
 @login_required
 def gym_owner_memberships_page(request):
     return render(request, 'gym_owner_memberships.html')
 
-# View to render the membership creation page
+
 def create_membership_view(request):
     return render(request, 'create_membership.html')
-
