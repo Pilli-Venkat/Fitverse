@@ -390,21 +390,6 @@ def gym_detail(request, pk):
 # Need to fix this part
 
 
-@login_required
-def add_gym_details(request):
-    if request.method == 'POST':
-        # Get form data
-        gym_name = request.POST.get('gym_name')
-        description = request.POST.get('description')
-        city = request.POST.get('city')
-
-        # Save the gym details
-        GymInfo.objects.create(owner=request.user, gym_name=gym_name, description=description, city=city)
-
-        # Redirect to a success page or home
-        return redirect('home')  # Assuming 'home' is a defined URL name
-
-    return render(request, 'add_gym_details.html')
 
 
 @login_required

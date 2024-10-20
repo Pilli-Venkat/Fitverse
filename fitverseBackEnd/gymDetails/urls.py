@@ -39,7 +39,7 @@ urlpatterns = [
 
 
     path('gymlist/<int:pk>/', views.gym_detail, name='gym_detail'),  
-    path('addGymdetails/', views.add_gym_details, name='add_gym_details'),
+   
     path('edit-gym/<int:gym_id>/', views.edit_gym_details, name='edit_gym_details'),
     path('membership-options/', views.customer_membership_options_view, name='membership-options'),
 
