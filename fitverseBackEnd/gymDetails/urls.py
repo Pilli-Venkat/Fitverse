@@ -5,9 +5,10 @@ from . import views
 
 router = DefaultRouter()
 
-router.register(r'gyminfo', views.GymInfoViewSet, basename='gyminfo')
+router.register(r'gyminfo', views.GymInfoViewSet, basename='gyminfo')   # (Gym Owner View): To list the gyms and also to add the gym details ---> Working
+
 router.register(r'createUser', views.CreateUserViewSet)
-router.register(r'gymlist', views.GymDetailsforCustomerViewSet, basename='gymlist')
+router.register(r'gymlist', views.GymDetailsforCustomerViewSet, basename='gymlist') # To list the total gyms added
 router.register(r'gyms', views.createGymInfoViewSet, basename='gyms')
 
 
