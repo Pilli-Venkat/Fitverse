@@ -55,7 +55,7 @@
 
         // Fetch and display gyms
         function fetchGyms() {
-            fetch('/api/gyms/')
+            fetch('/api/gyminfo/')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -100,7 +100,7 @@
                 city: document.getElementById('city').value,
             };
 
-            fetch('/api/gyms/', {
+            fetch('/api/gyminfo/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -137,7 +137,7 @@
                 return;
             }
 
-            fetch(`/api/gyms/${gymId}/`, {
+            fetch(`/api/gyminfo/${gymId}/`, {
                 method: 'DELETE',
                 headers: {
                     'X-CSRFToken': csrftoken,

@@ -49,7 +49,7 @@
     const gymId = {{ gym_id }};  // Pass gym_id from the view context
 
     // Fetch existing gym details to populate the form
-    fetch(`/api/gyms/${gymId}/`)
+    fetch(`/api/gyminfo/${gymId}/`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -76,7 +76,7 @@
             city: document.getElementById('city').value,
         };
 
-        fetch(`/api/gyms/${gymId}/`, {
+        fetch(`/api/gyminfo/${gymId}/`, {
             method: 'PUT',  // or 'PATCH' if you prefer partial updates
             headers: {
                 'Content-Type': 'application/json',
