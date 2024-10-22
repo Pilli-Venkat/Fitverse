@@ -11,13 +11,10 @@ router.register(r'createUser', views.CreateUserViewSet)
 router.register(r'gymlist', views.GymDetailsforCustomerViewSet, basename='gymlist') # To list the total gyms for both Owners and Customers
 
 
-#router.register(r'gyms', views.CreateGymInfoViewSet, basename='gyms')
+
+router.register(r'customerCreatedmemberships', views.MembershipViewSet,basename = 'memberships')
 
 
-router.register(r'memberships', views.MembershipViewSet,basename = 'memberships')
-
-
-router.register(r'customerMemberships', views.CustomerMembershipViewset,basename = 'customerMemberships')
 router.register(r'gymOwnerMemberships', views.GymOwnerMembershipViewset,basename = 'gymOwnerMemberships')
 
 

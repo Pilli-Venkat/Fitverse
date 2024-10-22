@@ -30,12 +30,6 @@ class GymInfoViewSet(viewsets.ModelViewSet):
         return GymInfoSerializer
 
 
-class CreateGymInfoViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
-    serializer_class = CreateGymInfoSerializer
-
-    def get_queryset(self):
-        return GymInfo.objects.filter(owner=self.request.user)
 
 
 class CreateUserViewSet(viewsets.ModelViewSet):
@@ -168,12 +162,6 @@ class MembershipViewSet(viewsets.ModelViewSet):
         return date.today() + expiration_map[membership_type]
 
 
-class CustomerMembershipViewset(viewsets.ModelViewSet):
-    serializer_class =CustomerMembershipSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        return Membership.objects.filter(user=self.request.user)
 
 
 class GymOwnerMembershipViewset(viewsets.ModelViewSet):

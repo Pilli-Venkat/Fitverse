@@ -82,7 +82,7 @@
 
         // Function to fetch membership status for a specific gym
         function fetchMembershipStatus(gymId) {
-            fetch(`/api/memberships/?gym_id=${gymId}`, {
+            fetch(`/api/customerCreatedmemberships/?gym_id=${gymId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
