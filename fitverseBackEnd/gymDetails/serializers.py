@@ -54,13 +54,6 @@ class CustomerMembershipSerializer(serializers.ModelSerializer):
         model = Membership
         fields = ['id', 'user', 'gym', 'start_date', 'expiration_date', 'membership_type', 'days_until_expiration']
 
-class GymOwnerMembershipSerializer(serializers.ModelSerializer):
-    days_until_expiration = serializers.ReadOnlyField() 
-    user = CustomUserSerializer()
-
-    class Meta:
-        model = Membership
-        fields = ['id', 'user', 'gym', 'start_date', 'expiration_date', 'membership_type', 'days_until_expiration']
 
 class GymOwnerCreatedMembershipSerializer(serializers.ModelSerializer):
     days_until_expiration = serializers.ReadOnlyField()

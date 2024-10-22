@@ -13,7 +13,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from .models import GymInfo, CustomUser, Membership, GymOwnerCreatedMembership
 from .serializers import (GymInfoSerializer, CreateGymInfoSerializer,
-                          CreateUserSerializer, GymOwnerCreatedMembershipSerializer,CustomerMembershipSerializer,GymOwnerMembershipSerializer)
+                          CreateUserSerializer, GymOwnerCreatedMembershipSerializer,CustomerMembershipSerializer)
 
 # ==========================
 # BACKEND VIEWS
@@ -164,13 +164,6 @@ class MembershipViewSet(viewsets.ModelViewSet):
 
 
 
-class GymOwnerMembershipViewset(viewsets.ModelViewSet):
-    serializer_class = GymOwnerMembershipSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        owner_gyms = GymInfo.objects.filter(owner=self.request.user)
-        return Membership.objects.filter(gym__in=owner_gyms)
 
 
 class GymOwnerCreatedMembershipViewSet(viewsets.ModelViewSet):

@@ -15,7 +15,6 @@ router.register(r'gymlist', views.GymDetailsforCustomerViewSet, basename='gymlis
 router.register(r'customerCreatedmemberships', views.MembershipViewSet,basename = 'memberships')
 
 
-router.register(r'gymOwnerMemberships', views.GymOwnerMembershipViewset,basename = 'gymOwnerMemberships')
 
 
 router.register(r'ownerCreatedmemberships', views.GymOwnerCreatedMembershipViewSet,basename = 'gymOwnerCreatedMemberships') #Main One
