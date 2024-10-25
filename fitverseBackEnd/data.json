@@ -1,0 +1,889 @@
+[
+    {
+        "model": "auth.permission",
+        "pk": 1,
+        "fields": {
+            "name": "Can add log entry",
+            "content_type": 1,
+            "codename": "add_logentry"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 2,
+        "fields": {
+            "name": "Can change log entry",
+            "content_type": 1,
+            "codename": "change_logentry"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 3,
+        "fields": {
+            "name": "Can delete log entry",
+            "content_type": 1,
+            "codename": "delete_logentry"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 4,
+        "fields": {
+            "name": "Can view log entry",
+            "content_type": 1,
+            "codename": "view_logentry"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 5,
+        "fields": {
+            "name": "Can add permission",
+            "content_type": 2,
+            "codename": "add_permission"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 6,
+        "fields": {
+            "name": "Can change permission",
+            "content_type": 2,
+            "codename": "change_permission"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 7,
+        "fields": {
+            "name": "Can delete permission",
+            "content_type": 2,
+            "codename": "delete_permission"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 8,
+        "fields": {
+            "name": "Can view permission",
+            "content_type": 2,
+            "codename": "view_permission"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 9,
+        "fields": {
+            "name": "Can add group",
+            "content_type": 3,
+            "codename": "add_group"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 10,
+        "fields": {
+            "name": "Can change group",
+            "content_type": 3,
+            "codename": "change_group"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 11,
+        "fields": {
+            "name": "Can delete group",
+            "content_type": 3,
+            "codename": "delete_group"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 12,
+        "fields": {
+            "name": "Can view group",
+            "content_type": 3,
+            "codename": "view_group"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 13,
+        "fields": {
+            "name": "Can add content type",
+            "content_type": 4,
+            "codename": "add_contenttype"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 14,
+        "fields": {
+            "name": "Can change content type",
+            "content_type": 4,
+            "codename": "change_contenttype"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 15,
+        "fields": {
+            "name": "Can delete content type",
+            "content_type": 4,
+            "codename": "delete_contenttype"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 16,
+        "fields": {
+            "name": "Can view content type",
+            "content_type": 4,
+            "codename": "view_contenttype"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 17,
+        "fields": {
+            "name": "Can add session",
+            "content_type": 5,
+            "codename": "add_session"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 18,
+        "fields": {
+            "name": "Can change session",
+            "content_type": 5,
+            "codename": "change_session"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 19,
+        "fields": {
+            "name": "Can delete session",
+            "content_type": 5,
+            "codename": "delete_session"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 20,
+        "fields": {
+            "name": "Can view session",
+            "content_type": 5,
+            "codename": "view_session"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 21,
+        "fields": {
+            "name": "Can add custom user",
+            "content_type": 6,
+            "codename": "add_customuser"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 22,
+        "fields": {
+            "name": "Can change custom user",
+            "content_type": 6,
+            "codename": "change_customuser"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 23,
+        "fields": {
+            "name": "Can delete custom user",
+            "content_type": 6,
+            "codename": "delete_customuser"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 24,
+        "fields": {
+            "name": "Can view custom user",
+            "content_type": 6,
+            "codename": "view_customuser"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 25,
+        "fields": {
+            "name": "Can add gym info",
+            "content_type": 7,
+            "codename": "add_gyminfo"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 26,
+        "fields": {
+            "name": "Can change gym info",
+            "content_type": 7,
+            "codename": "change_gyminfo"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 27,
+        "fields": {
+            "name": "Can delete gym info",
+            "content_type": 7,
+            "codename": "delete_gyminfo"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 28,
+        "fields": {
+            "name": "Can view gym info",
+            "content_type": 7,
+            "codename": "view_gyminfo"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 29,
+        "fields": {
+            "name": "Can add membership",
+            "content_type": 8,
+            "codename": "add_membership"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 30,
+        "fields": {
+            "name": "Can change membership",
+            "content_type": 8,
+            "codename": "change_membership"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 31,
+        "fields": {
+            "name": "Can delete membership",
+            "content_type": 8,
+            "codename": "delete_membership"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 32,
+        "fields": {
+            "name": "Can view membership",
+            "content_type": 8,
+            "codename": "view_membership"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 33,
+        "fields": {
+            "name": "Can add gym owner created membership",
+            "content_type": 9,
+            "codename": "add_gymownercreatedmembership"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 34,
+        "fields": {
+            "name": "Can change gym owner created membership",
+            "content_type": 9,
+            "codename": "change_gymownercreatedmembership"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 35,
+        "fields": {
+            "name": "Can delete gym owner created membership",
+            "content_type": 9,
+            "codename": "delete_gymownercreatedmembership"
+        }
+    },
+    {
+        "model": "auth.permission",
+        "pk": 36,
+        "fields": {
+            "name": "Can view gym owner created membership",
+            "content_type": 9,
+            "codename": "view_gymownercreatedmembership"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 1,
+        "fields": {
+            "app_label": "admin",
+            "model": "logentry"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 2,
+        "fields": {
+            "app_label": "auth",
+            "model": "permission"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 3,
+        "fields": {
+            "app_label": "auth",
+            "model": "group"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 4,
+        "fields": {
+            "app_label": "contenttypes",
+            "model": "contenttype"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 5,
+        "fields": {
+            "app_label": "sessions",
+            "model": "session"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 6,
+        "fields": {
+            "app_label": "Users",
+            "model": "customuser"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 7,
+        "fields": {
+            "app_label": "gymDetails",
+            "model": "gyminfo"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 8,
+        "fields": {
+            "app_label": "gymDetails",
+            "model": "membership"
+        }
+    },
+    {
+        "model": "contenttypes.contenttype",
+        "pk": 9,
+        "fields": {
+            "app_label": "gymDetails",
+            "model": "gymownercreatedmembership"
+        }
+    },
+    {
+        "model": "sessions.session",
+        "pk": "7zhe0qgusvpkve6r55v25ahbc5qnrxgr",
+        "fields": {
+            "session_data": ".eJxVjMsOwiAQRf-FtSECk4Fx6d5vIMNLqgaS0q4a_12bdKHbe865m_C8LtWvI89-SuIinDj9boHjM7cdpAe3e5ext2WegtwVedAhbz3l1_Vw_w4qj_qtrYlFgyanrLMFwUY0QJTREdCZQSVgzYoyayBXDGIyygRWFqGoEsX7A7M1Ntc:1sxN5b:0qoql_mT_KJJ8LDMe9xQaGA2nFs4_4dx0gSYgjJ-6fE",
+            "expire_date": "2024-10-20T08:58:07.332Z"
+        }
+    },
+    {
+        "model": "sessions.session",
+        "pk": "t920x2thwi23hh119ux4pcj3ukxzgi2a",
+        "fields": {
+            "session_data": ".eJxVjMsOwiAQRf-FtSEDhJdL934DmYFBqoYmpV0Z_12bdKHbe865L5FwW1vaBi9pKuIsojj9boT5wX0H5Y79Nss893WZSO6KPOiQ17nw83K4fwcNR_vW7J2BAmA9aq5YKarsrOHgIYbsgdiqHKJjrzxCVUCGUaHWmoNxxOL9AeHWN84:1t0c3C:9f7t73-rSlHsvSTRDDwzW5C8e818WgKqVOYobNlZd0E",
+            "expire_date": "2024-10-29T07:33:02.236Z"
+        }
+    },
+    {
+        "model": "sessions.session",
+        "pk": "w6xq0padv3c7j0pek4hlxx1iww2x6sw1",
+        "fields": {
+            "session_data": ".eJxVjMsOwiAQRf-FtSG8BZfu-w2EGQapGkhKuzL-uzbpQrf3nHNfLKZtrXEbtMQ5swuTgp1-R0j4oLaTfE_t1jn2ti4z8F3hBx186pme18P9O6hp1G9NYDKRo5QAAxgjCJ0LQhePWoezlqSKyFkVJZ0A55W1hBoKFbTKecPeHzOaOMI:1t2PUa:kHQjGrHOHiiHAYhQBeK6fJFAAi3b0pSe2FAx5mpNxR4",
+            "expire_date": "2024-11-03T06:32:44.339Z"
+        }
+    },
+    {
+        "model": "sessions.session",
+        "pk": "zspt22pfgrn4oz03jun2xj4p9ogtwk9b",
+        "fields": {
+            "session_data": ".eJxVjDkOwjAQAP_iGlk-sDdLSc8bol0fOIBsKU4qxN-RpRTQzozmLWbatzLvPa3zEsVFOHH6ZUzhmeoQ8UH13mRodVsXliORh-3y1mJ6XY_2b1Col7FVWVkE55Ql8EhZeZjAKw55ArAmRjxrHQwntgE1ExjLmNEljdqGKD5fvV03Tw:1sxKAr:fAohdBTjhg57OARdWCnPma6Lag0bJOMt5yq0RGmL3UA",
+            "expire_date": "2024-10-20T05:51:21.599Z"
+        }
+    },
+    {
+        "model": "Users.customuser",
+        "pk": 1,
+        "fields": {
+            "password": "pbkdf2_sha256$870000$eg36dEv2vdCMFc0KbRZ0gG$VQT/lKSmREP+VEfbRqRBIUaYIonoxSBJ5Ds41JpuGow=",
+            "last_login": "2024-10-05T09:57:35.999Z",
+            "is_superuser": false,
+            "phone_number": "9492330558",
+            "email": "sai@gmail.com",
+            "first_name": "venkat",
+            "last_name": "sai",
+            "is_active": true,
+            "is_staff": false,
+            "user_type": "gym_owner",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "Users.customuser",
+        "pk": 2,
+        "fields": {
+            "password": "pbkdf2_sha256$870000$Sr0smwhPbmBDVrtnbNMpbb$/SRPQ/M447SBiz3V/IWs5509CxJECT6ZkAjOFEupSCw=",
+            "last_login": "2024-10-05T10:30:43.139Z",
+            "is_superuser": false,
+            "phone_number": "7995432306",
+            "email": "sai2920@gmail.com",
+            "first_name": "sai",
+            "last_name": "v",
+            "is_active": true,
+            "is_staff": false,
+            "user_type": "customer",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "Users.customuser",
+        "pk": 3,
+        "fields": {
+            "password": "pbkdf2_sha256$870000$bXx36JBLCVfkd7BaZUoulD$KZiuHeSepvUSG/+x23qP9vINXX6U6FH4AVmOD2CY8O0=",
+            "last_login": "2024-10-05T10:26:42.293Z",
+            "is_superuser": false,
+            "phone_number": "909",
+            "email": "aipylottech@gmail.com",
+            "first_name": "AI",
+            "last_name": "Pylot",
+            "is_active": true,
+            "is_staff": false,
+            "user_type": "customer",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "Users.customuser",
+        "pk": 4,
+        "fields": {
+            "password": "pbkdf2_sha256$870000$eiQEX9A03LQ4sCapuYLUSP$+3JtwgUf4qtxZOpm5c6PUBjhddIWCHJ3Tj0hHNMo8bk=",
+            "last_login": "2024-10-05T10:37:48.961Z",
+            "is_superuser": false,
+            "phone_number": "999",
+            "email": "sai@gmail.com",
+            "first_name": "venkat",
+            "last_name": "sai",
+            "is_active": true,
+            "is_staff": false,
+            "user_type": "customer",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "Users.customuser",
+        "pk": 5,
+        "fields": {
+            "password": "pbkdf2_sha256$870000$3Edzxjbrrka8CB96S9hlty$SqQ3GYfRaQ3lnp2UFYZO2zsUHq4yzNUNlHetDU+N0gg=",
+            "last_login": "2024-10-06T05:51:21.597Z",
+            "is_superuser": false,
+            "phone_number": "99999",
+            "email": "aipylottech@gmail.com",
+            "first_name": "AI",
+            "last_name": "Pylot",
+            "is_active": true,
+            "is_staff": false,
+            "user_type": "gym_owner",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "Users.customuser",
+        "pk": 6,
+        "fields": {
+            "password": "pbkdf2_sha256$870000$C4sdnooEO6Vkm28bcn2OlY$z8ADVZQVyrek+w9C/nQndbWRh1wEa+UBWQuhPDxBxe4=",
+            "last_login": "2024-10-06T05:47:43.384Z",
+            "is_superuser": false,
+            "phone_number": "9900",
+            "email": "sai@gmail.com",
+            "first_name": "venkat",
+            "last_name": "Pylot",
+            "is_active": true,
+            "is_staff": false,
+            "user_type": "customer",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "Users.customuser",
+        "pk": 7,
+        "fields": {
+            "password": "pbkdf2_sha256$870000$BvIKn8yfdtLtNU4JD3hQFT$6CCbrSALn10pS3BL3Tc4HlNncReSi2tduvGfYpD59Jg=",
+            "last_login": "2024-10-06T06:24:02.034Z",
+            "is_superuser": false,
+            "phone_number": "123",
+            "email": "venkatasai2920@gmail.com",
+            "first_name": "sai",
+            "last_name": "v",
+            "is_active": true,
+            "is_staff": false,
+            "user_type": "customer",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "Users.customuser",
+        "pk": 8,
+        "fields": {
+            "password": "pbkdf2_sha256$870000$CALSh4w0WQWQW6dFQSeYoS$N2wEeP3r4Ge1oOJrCJGAVR/CHsQ0HI06J8rnonmPMyg=",
+            "last_login": "2024-10-06T08:58:07.329Z",
+            "is_superuser": false,
+            "phone_number": "333",
+            "email": "sai@gmail.com",
+            "first_name": "C3",
+            "last_name": "C3",
+            "is_active": true,
+            "is_staff": false,
+            "user_type": "customer",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "Users.customuser",
+        "pk": 9,
+        "fields": {
+            "password": "pbkdf2_sha256$870000$4qatppppKUpccfjOtfgCJS$pkFkHnKx+GBz2ypvCjiWomxQiKY7yp48JzkdBaJ9Qr8=",
+            "last_login": "2024-10-15T07:33:02.233Z",
+            "is_superuser": false,
+            "phone_number": "833",
+            "email": "manju@gmail.com",
+            "first_name": "Manju",
+            "last_name": "Sri",
+            "is_active": true,
+            "is_staff": false,
+            "user_type": "gym_owner",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "Users.customuser",
+        "pk": 10,
+        "fields": {
+            "password": "pbkdf2_sha256$870000$HBROdd4uj9TuzGUZEKHbNS$43PSyi6R8XNsg0Y0zVbknw75ygVuvr8I71tEGuUmyDY=",
+            "last_login": "2024-10-20T06:32:44.335Z",
+            "is_superuser": false,
+            "phone_number": "9898",
+            "email": "teja@gmail.com",
+            "first_name": "Teja",
+            "last_name": "M",
+            "is_active": true,
+            "is_staff": false,
+            "user_type": "customer",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "gymDetails.gyminfo",
+        "pk": 1,
+        "fields": {
+            "owner": 1,
+            "gym_name": "FitPro Gym",
+            "description": "A modern gym equipped with the latest fitness gear and offering a variety of classes.",
+            "city": "New York"
+        }
+    },
+    {
+        "model": "gymDetails.gyminfo",
+        "pk": 2,
+        "fields": {
+            "owner": 1,
+            "gym_name": "Almighty Gym",
+            "description": "Open Top Gym",
+            "city": "Mumbai"
+        }
+    },
+    {
+        "model": "gymDetails.gyminfo",
+        "pk": 5,
+        "fields": {
+            "owner": 5,
+            "gym_name": "vs fitness center",
+            "description": "Best gym in tuni",
+            "city": "Tuni"
+        }
+    },
+    {
+        "model": "gymDetails.gyminfo",
+        "pk": 6,
+        "fields": {
+            "owner": 9,
+            "gym_name": "Manju fitness",
+            "description": "ladies gym in tuni",
+            "city": "tuni, Kakinada"
+        }
+    },
+    {
+        "model": "gymDetails.gyminfo",
+        "pk": 7,
+        "fields": {
+            "owner": 9,
+            "gym_name": "Venkat Sai fitness",
+            "description": "tuni",
+            "city": "Tuni"
+        }
+    },
+    {
+        "model": "gymDetails.membership",
+        "pk": 1,
+        "fields": {
+            "user": 6,
+            "gym": 1,
+            "start_date": "2024-10-06",
+            "expiration_date": "2024-11-05",
+            "membership_type": "monthly"
+        }
+    },
+    {
+        "model": "gymDetails.membership",
+        "pk": 2,
+        "fields": {
+            "user": 6,
+            "gym": 1,
+            "start_date": "2024-10-06",
+            "expiration_date": "2024-11-05",
+            "membership_type": "monthly"
+        }
+    },
+    {
+        "model": "gymDetails.membership",
+        "pk": 3,
+        "fields": {
+            "user": 6,
+            "gym": 1,
+            "start_date": "2024-10-06",
+            "expiration_date": "2025-01-04",
+            "membership_type": "quarterly"
+        }
+    },
+    {
+        "model": "gymDetails.membership",
+        "pk": 4,
+        "fields": {
+            "user": 6,
+            "gym": 1,
+            "start_date": "2024-10-06",
+            "expiration_date": "2024-10-07",
+            "membership_type": "day"
+        }
+    },
+    {
+        "model": "gymDetails.membership",
+        "pk": 5,
+        "fields": {
+            "user": 6,
+            "gym": 1,
+            "start_date": "2024-10-06",
+            "expiration_date": "2024-11-05",
+            "membership_type": "monthly"
+        }
+    },
+    {
+        "model": "gymDetails.membership",
+        "pk": 6,
+        "fields": {
+            "user": 8,
+            "gym": 1,
+            "start_date": "2024-10-06",
+            "expiration_date": "2024-10-13",
+            "membership_type": "weekly"
+        }
+    },
+    {
+        "model": "gymDetails.membership",
+        "pk": 7,
+        "fields": {
+            "user": 8,
+            "gym": 5,
+            "start_date": "2024-10-06",
+            "expiration_date": "2024-11-05",
+            "membership_type": "monthly"
+        }
+    },
+    {
+        "model": "gymDetails.membership",
+        "pk": 8,
+        "fields": {
+            "user": 10,
+            "gym": 1,
+            "start_date": "2024-10-20",
+            "expiration_date": "2024-11-19",
+            "membership_type": "monthly"
+        }
+    },
+    {
+        "model": "gymDetails.membership",
+        "pk": 9,
+        "fields": {
+            "user": 10,
+            "gym": 7,
+            "start_date": "2024-10-20",
+            "expiration_date": "2024-10-27",
+            "membership_type": "weekly"
+        }
+    },
+    {
+        "model": "gymDetails.membership",
+        "pk": 10,
+        "fields": {
+            "user": 10,
+            "gym": 5,
+            "start_date": "2024-10-22",
+            "expiration_date": "2024-10-23",
+            "membership_type": "day"
+        }
+    },
+    {
+        "model": "gymDetails.gymownercreatedmembership",
+        "pk": 38,
+        "fields": {
+            "first_name": "Pilli",
+            "last_name": "Venkat Sai",
+            "phone_number": "9492330558",
+            "address": "Balaji road, Tuni",
+            "gym": 6,
+            "start_date": "2024-10-01",
+            "expiration_date": "2024-10-16",
+            "membership_type": "half_month",
+            "membership_option": "strength",
+            "created_at": "2024-10-17T06:39:18.748Z",
+            "deleted": false
+        }
+    },
+    {
+        "model": "gymDetails.gymownercreatedmembership",
+        "pk": 39,
+        "fields": {
+            "first_name": "Pilli",
+            "last_name": "Venkat Sai",
+            "phone_number": "9492330558",
+            "address": "Balaji road, Tuni",
+            "gym": 6,
+            "start_date": "2024-08-16",
+            "expiration_date": "2024-08-31",
+            "membership_type": "half_month",
+            "membership_option": "strength",
+            "created_at": "2024-10-17T06:40:10.779Z",
+            "deleted": true
+        }
+    },
+    {
+        "model": "gymDetails.gymownercreatedmembership",
+        "pk": 40,
+        "fields": {
+            "first_name": "Pilli",
+            "last_name": "Venkat Sai",
+            "phone_number": "9492330558",
+            "address": "Balaji road, Tuni",
+            "gym": 6,
+            "start_date": "2024-10-09",
+            "expiration_date": "2024-10-16",
+            "membership_type": "weekly",
+            "membership_option": "strength",
+            "created_at": "2024-10-17T06:40:51.308Z",
+            "deleted": true
+        }
+    },
+    {
+        "model": "gymDetails.gymownercreatedmembership",
+        "pk": 41,
+        "fields": {
+            "first_name": "Shafiya",
+            "last_name": "Ulli",
+            "phone_number": "8686188884",
+            "address": "Ananthapur",
+            "gym": 6,
+            "start_date": "2024-10-05",
+            "expiration_date": "2024-10-20",
+            "membership_type": "half_month",
+            "membership_option": "strength",
+            "created_at": "2024-10-19T04:39:05.986Z",
+            "deleted": false
+        }
+    },
+    {
+        "model": "gymDetails.gymownercreatedmembership",
+        "pk": 42,
+        "fields": {
+            "first_name": "Pilli",
+            "last_name": "Venkat Sai",
+            "phone_number": "9492330558",
+            "address": "Balaji road, Tuni",
+            "gym": 6,
+            "start_date": "2024-10-19",
+            "expiration_date": "2024-11-16",
+            "membership_type": "monthly",
+            "membership_option": "strength",
+            "created_at": "2024-10-19T04:40:54.505Z",
+            "deleted": false
+        }
+    },
+    {
+        "model": "gymDetails.gymownercreatedmembership",
+        "pk": 43,
+        "fields": {
+            "first_name": "sai",
+            "last_name": "v",
+            "phone_number": "123",
+            "address": "lll",
+            "gym": 6,
+            "start_date": "2024-10-20",
+            "expiration_date": "2024-11-04",
+            "membership_type": "half_month",
+            "membership_option": "strength",
+            "created_at": "2024-10-20T07:15:04.249Z",
+            "deleted": false
+        }
+    },
+    {
+        "model": "gymDetails.gymownercreatedmembership",
+        "pk": 44,
+        "fields": {
+            "first_name": "Shafiya",
+            "last_name": "Ulli",
+            "phone_number": "8686188884",
+            "address": "Ananthapur",
+            "gym": 6,
+            "start_date": "2024-10-21",
+            "expiration_date": "2024-11-18",
+            "membership_type": "monthly",
+            "membership_option": "strength",
+            "created_at": "2024-10-22T09:16:47.020Z",
+            "deleted": false
+        }
+    }
+]
